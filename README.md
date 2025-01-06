@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/e87f0d0e-4999-45bd-b4d4-5def25100fd0)# npng
+# npng
   
 # PlayWrist : 스마트 워치를 이용한 게임 어플
 
