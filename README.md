@@ -13,19 +13,29 @@
 ### 🔹 Frontend
 [![Swift](https://skillicons.dev/icons?i=swift)](https://swift.org)
 
+ Swift
+
 ### 🔹 Backend
 [![Firebase](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com)
 
+ Firbase
+
 ### 🔹 Database
 [![Firebase Realtime Database](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/products/realtime-database)
+
+ Firebase Realtime Database
 
 ### 🔹 DevOps
 [![Docker](https://skillicons.dev/icons?i=docker)](https://www.docker.com) 
 [![GitHub Actions](https://skillicons.dev/icons?i=githubactions)](https://github.com/features/actions)
 
+ Docker   GitHub Actions
+
 ### 🔹 Tools
 [![Git](https://skillicons.dev/icons?i=git)](https://git-scm.com) 
 [![GitHub](https://skillicons.dev/icons?i=github)](https://github.com)
+
+   Git   GitHub
 
 ## 시스템 구성도 (예비안)
 ![image](https://github.com/user-attachments/assets/a448aa35-835c-4b3e-8df1-9e6902919e2c)
