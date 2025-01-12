@@ -12,8 +12,9 @@
 
 ### 🔹 Frontend
 [![Swift](https://skillicons.dev/icons?i=swift)](https://swift.org)
+[![Python](https://skillicons.dev/icons?i=python)](https://python.org)
 
- Swift
+ Swift  Python
 
 ### 🔹 Backend
 [![Firebase](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com)
