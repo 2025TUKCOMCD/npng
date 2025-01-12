@@ -13,7 +13,7 @@
 ### 🔹 Frontend
 [![Swift](https://skillicons.dev/icons?i=swift)](https://swift.org)
 [![Python](https://skillicons.dev/icons?i=python)](https://python.org)
-![image](https://github.com/user-attachments/assets/b7b6d8e4-5554-42f3-bc96-9e4318ccd821)
+
 
  Swift  Python
 
