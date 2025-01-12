@@ -40,9 +40,12 @@
   
    Git   GitHub
 
+
 ## 시스템 구성도 (예비안)
 ![image](https://github.com/user-attachments/assets/a448aa35-835c-4b3e-8df1-9e6902919e2c)
 
+
+![캡처](https://github.com/user-attachments/assets/a06df50b-f561-4d22-b8ac-d3a1c7316253)
 데모환경 : Xcode 시뮬레이터, Firebase 콘솔
 
 운용환경 : iOS, watchOS
