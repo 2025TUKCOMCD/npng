@@ -50,7 +50,7 @@
 
 ![제목 없음](https://github.com/user-attachments/assets/fc3af0d4-57d2-4861-8c13-68e3cb23308f)
 
-데모환경 : Xcode 시뮬레이터, Firebase 콘솔
+데모환경 : Xcode 시뮬레이터, Firebase 콘솔, 
 
 운용환경 : iOS, watchOS
 watchOS 8 이상, iOS 15 이상,
