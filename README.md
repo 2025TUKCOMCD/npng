@@ -16,7 +16,7 @@
 
 
 
- Swift  Python
+ Swift  Python SwiftUI
 
 ### 🔹 Backend
 [![Firebase](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com)
