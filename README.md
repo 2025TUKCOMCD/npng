@@ -36,7 +36,7 @@
 ### 🔹 Tools
 [![Git](https://skillicons.dev/icons?i=git)](https://git-scm.com) 
 [![GitHub](https://skillicons.dev/icons?i=github)](https://github.com)
-[![Xcode](https://skilicons.dev/icons?i=xcode)](https://developer.apple.com/xcode/)
+![Xcode](https://img.shields.io/badge/Development-Xcode-blue)
   
    Git   GitHub
 
