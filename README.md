@@ -48,8 +48,9 @@
 
 
 ![캡처](https://github.com/user-attachments/assets/a06df50b-f561-4d22-b8ac-d3a1c7316253)
+<img width="849" alt="스크린샷 2025-01-13 오후 2 13 12" src="https://github.com/user-attachments/assets/af1c83ce-b261-4c12-97ee-98e3be540dbd" />
 
-![제목 없음](https://github.com/user-attachments/assets/14263ecc-66b1-4d3c-a82a-c18acbb9e8df)
+
 
 데모환경 : Xcode 시뮬레이터, Firebase 콘솔
 
