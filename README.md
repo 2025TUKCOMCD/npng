@@ -26,7 +26,7 @@
 ### 🔹 Database
 [![Firebase Realtime Database](https://skillicons.dev/icons?i=firebase)](https://firebase.google.com/products/realtime-database)
 
- Firebase Realtime Database
+ Firebase Realtime Database   Firestore
 
 ### 🔹 DevOps
 [![Docker](https://skillicons.dev/icons?i=docker)](https://www.docker.com) 
