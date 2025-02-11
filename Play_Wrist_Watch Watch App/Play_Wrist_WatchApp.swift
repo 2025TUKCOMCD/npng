@@ -11,7 +11,7 @@ import SwiftUI
 struct Play_Wrist_Watch_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WatchContentView()
         }
     }
 }
