@@ -83,10 +83,10 @@ struct HeartRateView: View {
             Spacer()
 
             if heartRateMonitor.simulatedHeartRate >= 110 {
-                Text("🚨 심박수가 너무 높습니다!")
+                Text("미션 완료!!")
                     .foregroundColor(.red)
             } else {
-                Text("💖 정상 범위입니다.")
+                Text("미션 실패!!")
                     .foregroundColor(.blue)
             }
 

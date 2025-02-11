@@ -16,7 +16,7 @@ struct ContentView: View {
                 VStack {
                     switch currentScreen {
                     case .main:
-                        MainView(userName: $userName, currentScreen: $currentScreen)
+                        MainView(userName: $userName, currentScreen: $currentScreen, isLoggedIn: $isLoggedIn)
                     case .gameSelection:
                         GameSelectionView(currentScreen: $currentScreen)
                     case .joinRoom:
@@ -27,7 +27,7 @@ struct ContentView: View {
                         PlayerListView(currentScreen: $currentScreen)
                     }
                 }
-                .navigationBarHidden(true)
+                .navigationBarHidden(false) // Navigation bar를 보이게 설정
             } else {
                 SignInView(userName: $userName, isLoggedIn: $isLoggedIn)
             }
@@ -41,7 +41,7 @@ struct SignInView: View {
     
     var body: some View {
         VStack {
-            Text("Sign in to Play!")
+            Text("Play Wrist~~!")
                 .font(.largeTitle)
                 .bold()
                 .padding()
@@ -65,11 +65,14 @@ struct SignInView: View {
     func handleAuthResults(_ authResults: ASAuthorization) {
         if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
             DispatchQueue.main.async {
+                // fullName에서 firstName을 제대로 받는지 확인
                 if let fullName = appleIDCredential.fullName?.givenName, !fullName.isEmpty {
                     self.userName = fullName
                     UserDefaults.standard.set(fullName, forKey: "userName")
                 } else {
-                    self.userName = UserDefaults.standard.string(forKey: "userName") ?? "User"
+                    // Apple 계정에 이름이 없다면 이메일을 사용자 이름으로 사용
+                    self.userName = appleIDCredential.email ?? "User"
+                    UserDefaults.standard.set(self.userName, forKey: "userName")
                 }
                 self.isLoggedIn = true
                 UserDefaults.standard.set(true, forKey: "isLoggedIn")
@@ -81,11 +84,12 @@ struct SignInView: View {
 struct MainView: View {
     @Binding var userName: String
     @Binding var currentScreen: ContentView.Screen
+    @Binding var isLoggedIn: Bool
     
     var body: some View {
         VStack {
             HStack {
-                Text("👤 \(userName)")
+                Text("👤 \(userName)") // 사용자 이름 표시
                     .font(.title2)
                     .bold()
                     .padding()
@@ -103,6 +107,17 @@ struct MainView: View {
             }
             .buttonStyle(.borderedProminent)
         }
+        .navigationBarItems(leading: Button("로그아웃") {
+            logOut()
+        })
+        .navigationBarTitleDisplayMode(.inline)
+    }
+    
+    func logOut() {
+        // 로그아웃 처리
+        isLoggedIn = false
+        UserDefaults.standard.set(false, forKey: "isLoggedIn")
+        UserDefaults.standard.removeObject(forKey: "userName")
     }
 }
 
@@ -137,36 +152,9 @@ struct JoinRoomView: View {
                 currentScreen = .playerList
             }
             .buttonStyle(.borderedProminent)
-            
-            
         }
     }
 }
-
-struct InviteCodeSearchView: View {
-    @Binding var currentScreen: ContentView.Screen
-    @State private var inviteCode: String = ""
-    
-    var body: some View {
-        VStack {
-            TextField("초대 코드 입력", text: $inviteCode)
-                .textFieldStyle(.roundedBorder)
-                .padding()
-            
-            Button("검색") {
-                // 초대 코드 검색 로직 추가 가능
-                print("Searching for room with invite code: \(inviteCode)")
-            }
-            .buttonStyle(.borderedProminent)
-            
-            Button("뒤로 가기") {
-                currentScreen = .joinRoom
-            }
-            .buttonStyle(.borderedProminent)
-        }
-    }
-}
-
 
 struct CreateRoomView: View {
     @Binding var currentScreen: ContentView.Screen
@@ -215,10 +203,10 @@ struct PlayerListView: View {
     
     var body: some View {
         VStack {
-            Text("재밌는 게임 해요~")
+            Text("Play Wrist~")
                 .font(.title)
                 .padding()
-            List(players, id: \..self) { player in
+            List(players, id: \.self) { player in
                 HStack {
                     Image(systemName: "person.circle.fill")
                     Text(player)

@@ -1,15 +1,15 @@
 //
-//  Play_WristApp.swift
-//  Play_Wrist
+//  bombApp.swift
+//  bomb
 //
-//  Created by 김현수 on 1/31/25.
+//  Created by 김현수 on 3/5/25.
 //
 
 import SwiftUI
 import SwiftData
 
 
-struct Play_WristApp: App {
+struct bombApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
             Item.self,
