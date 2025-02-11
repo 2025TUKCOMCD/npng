@@ -105,7 +105,7 @@ struct WatchNumberGameView: View {
             Text("🎮 랜덤 숫자 게임")
                 .font(.headline)
 
-            Text(playerManager.assignedNumber == 1 ? "💣 폭탄" : "당신의 번호: \(playerManager.assignedNumber)")
+            Text(playerManager.assignedNumber == 1 ? "💣 폭탄" : " \(playerManager.assignedNumber)")
                 .font(.largeTitle)
                 .foregroundColor(playerManager.assignedNumber == 1 ? .red : .blue)
 
