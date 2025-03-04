@@ -1,185 +1,203 @@
 import SwiftUI
-import WatchConnectivity
-
-class AppState: ObservableObject {
-    @Published var joinedRoomCode: String? = nil
-
-    func updateRoomCode(_ code: String) {
-        self.joinedRoomCode = code
-    }
-}
+import AuthenticationServices
 
 struct ContentView: View {
-    @StateObject private var appState = AppState()
+    @State private var userName: String = UserDefaults.standard.string(forKey: "userName") ?? "User"
+    @State private var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
+    @State private var navigateTo: String? = nil  // 화면 전환을 위한 상태
 
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Text("Play Wrist")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                NavigationLink(destination: GameView(gameType: "Mafia Game", appState: appState)) {
-                    Text("Mafia Game")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-                
-                NavigationLink(destination: GameView(gameType: "Bomb Party", appState: appState)) {
-                    Text("Bomb Party")
-                        .padding()
-                        .background(Color.green)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                }
-            }
-            .padding()
-        }
-        .environmentObject(appState)
-    }
-}
-
-// 공통 게임 뷰 (Mafia Game & Bomb Party)
-struct GameView: View {
-    var gameType: String
-    @ObservedObject var appState: AppState
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text(gameType)
-                .font(.title)
-                .padding()
-            
-            NavigationLink(destination: CreateRoomView(gameType: gameType, appState: appState)) {
-                Text("방 생성")
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-            
-            NavigationLink(destination: JoinRoomView(gameType: gameType, appState: appState)) {
-                Text("방 참가")
-                    .padding()
-                    .background(Color.green)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-            }
-        }
-        .padding()
-    }
-}
-
-struct CreateRoomView: View {
-    var gameType: String
-    @ObservedObject var appState: AppState
-    @State private var inviteCode: String? = nil
-    @State private var navigateToRoom = false
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("\(gameType) 방 생성")
-                .font(.title)
-                .padding()
-            
-            if let code = inviteCode {
-                Text("초대 코드: \(code)")
-                    .font(.headline)
-                    .foregroundColor(.blue)
-                    .padding()
-                
-                NavigationLink(destination: RoomView(gameType: gameType, roomCode: code), isActive: $navigateToRoom) {
-                    EmptyView()
-                }
-                
-                Button("방 생성 완료") {
-                    appState.updateRoomCode(code)
-                    navigateToRoom = true
-                }
-                .padding()
-                .background(Color.green)
-                .foregroundColor(.white)
-                .cornerRadius(10)
+            if isLoggedIn {
+                MainView(userName: userName, navigateTo: $navigateTo)
             } else {
-                Button(action: generateInviteCode) {
-                    Text("방 생성하기")
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                SignInView(userName: $userName, isLoggedIn: $isLoggedIn)
+            }
+        }
+    }
+}
+
+// 🚀 Apple 로그인 화면
+struct SignInView: View {
+    @Binding var userName: String
+    @Binding var isLoggedIn: Bool
+
+    var body: some View {
+        VStack {
+            Text("Sign in to Play!")
+                .font(.largeTitle)
+                .bold()
+                .padding()
+
+            SignInWithAppleButton(.signIn) { request in
+                request.requestedScopes = [.fullName, .email]
+            } onCompletion: { result in
+                switch result {
+                case .success(let authResults):
+                    handleAuthResults(authResults)
+                case .failure(let error):
+                    print("Apple Sign-In Failed: \(error.localizedDescription)")
                 }
             }
-            
+            .signInWithAppleButtonStyle(.black)
+            .frame(width: 200, height: 45)
+            .cornerRadius(10)
+        }
+    }
+
+    func handleAuthResults(_ authResults: ASAuthorization) {
+        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
+            DispatchQueue.main.async {
+                if let fullName = appleIDCredential.fullName?.givenName, !fullName.isEmpty {
+                    self.userName = fullName
+                    UserDefaults.standard.set(fullName, forKey: "userName")  // ✅ 이름 저장
+                } else {
+                    self.userName = UserDefaults.standard.string(forKey: "userName") ?? "User"
+                }
+                self.isLoggedIn = true
+                UserDefaults.standard.set(true, forKey: "isLoggedIn")  // ✅ 로그인 상태 저장
+            }
+        }
+    }
+}
+
+// 🎮 메인 화면 (로그인 후)
+struct MainView: View {
+    var userName: String
+    @Binding var navigateTo: String?
+
+    var body: some View {
+        VStack {
+            HStack {
+                Text("👤 \(userName)")
+                    .font(.title2)
+                    .bold()
+                    .padding()
+                Spacer()
+            }
+            .padding(.leading)
+
+            Spacer()
+            Text("Play Fun!")
+                .font(.largeTitle)
+                .bold()
+                .padding()
+
+            Button("방 만들기") {
+                navigateTo = "createRoom"
+            }
+            .buttonStyle(MainButtonStyle())
+
+            Button("방 찾기") {
+                navigateTo = "findRoom"
+            }
+            .buttonStyle(MainButtonStyle())
+
             Spacer()
         }
-        .padding()
-    }
-
-    func generateInviteCode() {
-        let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        inviteCode = String((0..<8).map { _ in characters.randomElement()! })
-    }
-}
-
-struct JoinRoomView: View {
-    var gameType: String
-    @ObservedObject var appState: AppState
-    @State private var inputCode: String = ""
-    @State private var navigateToRoom = false
-
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("\(gameType) 방 참가")
-                .font(.title)
-                .padding()
-            
-            TextField("초대 코드를 입력하세요", text: $inputCode)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-            
-            NavigationLink(destination: RoomView(gameType: gameType, roomCode: inputCode), isActive: $navigateToRoom) {
+        .background(
+            NavigationLink(destination: GameSelectionView(), tag: "createRoom", selection: $navigateTo) {
                 EmptyView()
             }
-            
-            Button("참가하기") {
-                appState.updateRoomCode(inputCode)
-                navigateToRoom = true
+            .hidden()
+        )
+        .background(
+            NavigationLink(destination: FindRoomView(), tag: "findRoom", selection: $navigateTo) {
+                EmptyView()
             }
-            .padding()
-            .background(Color.green)
-            .foregroundColor(.white)
-            .cornerRadius(10)
-            
-            Spacer()
-        }
-        .padding()
+            .hidden()
+        )
     }
 }
 
-struct RoomView: View {
-    var gameType: String
-    var roomCode: String
+// 🎲 게임 선택 화면
+struct GameSelectionView: View {
+    var body: some View {
+        VStack {
+            Text("Play Wrist")
+                .font(.title)
+                .bold()
+                .padding()
+
+            GameOptionView(icon: "bomb.fill", title: "Bomb Party", description: "랜덤 미션 폭탄 돌리기 게임")
+            GameOptionView(icon: "cross.fill", title: "Mafia Game", description: "마피아 게임을 현실에서!")
+
+            Spacer()
+        }
+    }
+}
+
+// 🎮 방 찾기 화면
+struct FindRoomView: View {
+    @State private var roomCode: String = ""
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("\(gameType) 방에 입장했습니다!")
+        VStack {
+            Text("Play Wrist")
                 .font(.title)
+                .bold()
                 .padding()
-            
-            Text("방 코드: \(roomCode)")
-                .font(.headline)
-                .foregroundColor(.blue)
-            
+
+            TextField("Enter the Code", text: $roomCode)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+
+            Button("Join") {
+                print("Joining room: \(roomCode)")
+            }
+            .buttonStyle(MainButtonStyle())
+
             Spacer()
         }
+    }
+}
+
+// 🎨 버튼 스타일
+struct MainButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(width: 200, height: 50)
+            .background(Color.purple)
+            .foregroundColor(.white)
+            .cornerRadius(10)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+    }
+}
+
+// 🎲 게임 선택 카드 UI
+struct GameOptionView: View {
+    var icon: String
+    var title: String
+    var description: String
+
+    var body: some View {
+        HStack {
+            Image(systemName: icon)
+                .font(.largeTitle)
+                .padding()
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.title3)
+                    .bold()
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+            }
+            Spacer()
+        }
+        .frame(width: 300, height: 80)
+        .background(Color.white.opacity(0.2))
+        .cornerRadius(10)
         .padding()
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+// 앱 실행
+@main
+struct MyApp: App {
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+        }
     }
 }
