@@ -8,7 +8,11 @@
 import SwiftUI
 import SwiftData
 
+<<<<<<< HEAD
 
+=======
+@main
+>>>>>>> 4fb0835 (Local changes before pulling remote)
 struct Play_WristApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
