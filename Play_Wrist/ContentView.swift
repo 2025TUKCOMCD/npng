@@ -1,203 +1,283 @@
 import SwiftUI
+import CryptoKit
 import AuthenticationServices
+import FirebaseAuth
 
 struct ContentView: View {
-    @State private var userName: String = UserDefaults.standard.string(forKey: "userName") ?? "User"
-    @State private var isLoggedIn: Bool = UserDefaults.standard.bool(forKey: "isLoggedIn")
-    @State private var navigateTo: String? = nil  // 화면 전환을 위한 상태
-
+    @StateObject private var viewModel = AppleSignInViewModel()
+    
     var body: some View {
         NavigationView {
-            if isLoggedIn {
-                MainView(userName: userName, navigateTo: $navigateTo)
+            if viewModel.isSignedIn {
+                MainView(viewModel: viewModel, userName: viewModel.userName ?? "사용자")
             } else {
-                SignInView(userName: $userName, isLoggedIn: $isLoggedIn)
+                LandingView(viewModel: viewModel)
             }
+        }
+        .onAppear {
+            viewModel.checkAuthState()
         }
     }
 }
 
-// 🚀 Apple 로그인 화면
-struct SignInView: View {
-    @Binding var userName: String
-    @Binding var isLoggedIn: Bool
+// ✅ 로그인 전 화면
+struct LandingView: View {
+    @ObservedObject var viewModel: AppleSignInViewModel
 
     var body: some View {
         VStack {
-            Text("Sign in to Play!")
+            Spacer()
+            Image(systemName: "play.circle.fill")
+                .resizable()
+                .frame(width: 80, height: 80)
+                .foregroundColor(.purple)
+                .padding(.bottom, 10)
+            
+            Text("Play Wrist")
                 .font(.largeTitle)
-                .bold()
-                .padding()
-
-            SignInWithAppleButton(.signIn) { request in
-                request.requestedScopes = [.fullName, .email]
-            } onCompletion: { result in
-                switch result {
-                case .success(let authResults):
-                    handleAuthResults(authResults)
-                case .failure(let error):
-                    print("Apple Sign-In Failed: \(error.localizedDescription)")
+                .fontWeight(.bold)
+                .foregroundColor(.purple)
+            
+            Spacer()
+            
+            SignInWithAppleButton(
+                onRequest: { request in
+                    viewModel.startSignInWithAppleFlow(request: request)
+                },
+                onCompletion: { result in
+                    viewModel.handleSignInResult(result: result)
                 }
-            }
+            )
             .signInWithAppleButtonStyle(.black)
-            .frame(width: 200, height: 45)
+            .frame(height: 50)
+            .padding()
+            .background(Color.white)
             .cornerRadius(10)
+            .shadow(radius: 5)
+            
+            Spacer()
         }
-    }
-
-    func handleAuthResults(_ authResults: ASAuthorization) {
-        if let appleIDCredential = authResults.credential as? ASAuthorizationAppleIDCredential {
-            DispatchQueue.main.async {
-                if let fullName = appleIDCredential.fullName?.givenName, !fullName.isEmpty {
-                    self.userName = fullName
-                    UserDefaults.standard.set(fullName, forKey: "userName")  // ✅ 이름 저장
-                } else {
-                    self.userName = UserDefaults.standard.string(forKey: "userName") ?? "User"
-                }
-                self.isLoggedIn = true
-                UserDefaults.standard.set(true, forKey: "isLoggedIn")  // ✅ 로그인 상태 저장
-            }
-        }
+        .background(Color.purple.opacity(0.2).edgesIgnoringSafeArea(.all))
     }
 }
 
-// 🎮 메인 화면 (로그인 후)
+// ✅ 로그인 후 메인 화면
 struct MainView: View {
+    @ObservedObject var viewModel: AppleSignInViewModel
     var userName: String
-    @Binding var navigateTo: String?
 
     var body: some View {
         VStack {
+            // 🔹 상단 네비게이션 바
             HStack {
-                Text("👤 \(userName)")
+                Text("\(userName)님")
                     .font(.title2)
-                    .bold()
-                    .padding()
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(.leading, 10)
+                
                 Spacer()
+                
+                Text("Play Wrist")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                
+                Spacer()
+                
+                Button(action: {
+                    viewModel.signOut()
+                }) {
+                    Image(systemName: "power")
+                        .font(.title)
+                        .foregroundColor(.white)
+                        .padding(.trailing, 10)
+                }
             }
-            .padding(.leading)
+            .padding()
+            .background(Color.purple)
 
             Spacer()
+            
             Text("Play Fun!")
                 .font(.largeTitle)
-                .bold()
-                .padding()
-
-            Button("방 만들기") {
-                navigateTo = "createRoom"
+                .fontWeight(.bold)
+                .foregroundColor(.purple)
+            
+            VStack(spacing: 20) {
+                Button(action: {}) {
+                    Text("방 만들기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.purple)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
+                
+                Button(action: {}) {
+                    Text("방 찾기")
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.purple)
+                        .foregroundColor(.white)
+                        .cornerRadius(10)
+                }
             }
-            .buttonStyle(MainButtonStyle())
-
-            Button("방 찾기") {
-                navigateTo = "findRoom"
-            }
-            .buttonStyle(MainButtonStyle())
-
+            .padding(.horizontal, 40)
+            
             Spacer()
-        }
-        .background(
-            NavigationLink(destination: GameSelectionView(), tag: "createRoom", selection: $navigateTo) {
-                EmptyView()
+            
+            HStack {
+                Spacer()
+                Button(action: {}) { Image(systemName: "house.fill").font(.title) }
+                Spacer()
+                Button(action: {}) { Image(systemName: "magnifyingglass").font(.title) }
+                Spacer()
+                Button(action: {}) { Image(systemName: "book.fill").font(.title) }
+                Spacer()
+                Button(action: {}) { Image(systemName: "gearshape.fill").font(.title) }
+                Spacer()
             }
-            .hidden()
-        )
-        .background(
-            NavigationLink(destination: FindRoomView(), tag: "findRoom", selection: $navigateTo) {
-                EmptyView()
-            }
-            .hidden()
-        )
-    }
-}
-
-// 🎲 게임 선택 화면
-struct GameSelectionView: View {
-    var body: some View {
-        VStack {
-            Text("Play Wrist")
-                .font(.title)
-                .bold()
-                .padding()
-
-            GameOptionView(icon: "bomb.fill", title: "Bomb Party", description: "랜덤 미션 폭탄 돌리기 게임")
-            GameOptionView(icon: "cross.fill", title: "Mafia Game", description: "마피아 게임을 현실에서!")
-
-            Spacer()
-        }
-    }
-}
-
-// 🎮 방 찾기 화면
-struct FindRoomView: View {
-    @State private var roomCode: String = ""
-
-    var body: some View {
-        VStack {
-            Text("Play Wrist")
-                .font(.title)
-                .bold()
-                .padding()
-
-            TextField("Enter the Code", text: $roomCode)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-
-            Button("Join") {
-                print("Joining room: \(roomCode)")
-            }
-            .buttonStyle(MainButtonStyle())
-
-            Spacer()
-        }
-    }
-}
-
-// 🎨 버튼 스타일
-struct MainButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .frame(width: 200, height: 50)
+            .padding()
             .background(Color.purple)
             .foregroundColor(.white)
-            .cornerRadius(10)
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+        }
+        .background(Color.purple.opacity(0.1).edgesIgnoringSafeArea(.all))
     }
 }
 
-// 🎲 게임 선택 카드 UI
-struct GameOptionView: View {
-    var icon: String
-    var title: String
-    var description: String
+// ✅ Apple 로그인 & Firebase 관리 뷰 모델 (이제 ContentView.swift 안에 포함)
+class AppleSignInViewModel: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+    
+    @Published var isSignedIn = false
+    @Published var userID: String?
+    @Published var userEmail: String?
+    @Published var userName: String?
+    
+    fileprivate var currentNonce: String?
+    
+    func startSignInWithAppleFlow(request: ASAuthorizationAppleIDRequest) {
+        let nonce = randomNonceString()
+        currentNonce = nonce
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
+    }
+    
+    func handleSignInResult(result: Result<ASAuthorization, Error>) {
+        switch result {
+        case .success(let authorization):
+            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+                guard let nonce = currentNonce else { return }
+                guard let appleIDToken = appleIDCredential.identityToken else { return }
+                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else { return }
 
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .font(.largeTitle)
-                .padding()
-            VStack(alignment: .leading) {
-                Text(title)
-                    .font(.title3)
-                    .bold()
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
+                let credential = OAuthProvider.appleCredential(
+                    withIDToken: idTokenString,
+                    rawNonce: nonce,
+                    fullName: appleIDCredential.fullName
+                )
+
+                Auth.auth().signIn(with: credential) { authResult, error in
+                    if let error = error {
+                        print("❌ Firebase 로그인 실패: \(error.localizedDescription)")
+                        return
+                    }
+
+                    if let user = Auth.auth().currentUser {
+                        DispatchQueue.main.async {
+                            self.isSignedIn = true
+                            self.userID = user.uid
+                            self.userEmail = user.email
+
+                            if let fullName = appleIDCredential.fullName {
+                                let name = "\(fullName.familyName ?? "")\(fullName.givenName ?? "")"
+                                if !name.isEmpty {
+                                    self.userName = name
+                                    self.updateUserNameInFirebase(name: name)
+                                }
+                            } else {
+                                self.userName = user.displayName ?? user.email
+                            }
+
+                            // ✅ Firebase 인증 성공 로그 출력!
+                            print("✅ Firebase 인증 성공! 🎉")
+                            print("🆔 UID: \(user.uid)")
+                            print("📧 이메일: \(user.email ?? "이메일 없음")")
+                            print("🙍‍♂️ 이름: \(self.userName ?? "이름 없음")")
+                        }
+                    }
+                }
             }
-            Spacer()
+        case .failure(let error):
+            print("Apple 로그인 오류: \(error.localizedDescription)")
         }
-        .frame(width: 300, height: 80)
-        .background(Color.white.opacity(0.2))
-        .cornerRadius(10)
-        .padding()
     }
-}
-
-// 앱 실행
-@main
-struct MyApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
+    
+    private func updateUserNameInFirebase(name: String) {
+        if let user = Auth.auth().currentUser {
+            let changeRequest = user.createProfileChangeRequest()
+            changeRequest.displayName = name
+            changeRequest.commitChanges { error in
+                if let error = error {
+                    print("❌ Firebase에 사용자 이름 저장 실패: \(error.localizedDescription)")
+                } else {
+                    print("✅ Firebase에 사용자 이름 저장 완료: \(name)")
+                }
+            }
         }
+    }
+    
+    func checkAuthState() {
+        if let user = Auth.auth().currentUser {
+            DispatchQueue.main.async {
+                self.isSignedIn = true
+                self.userID = user.uid
+                self.userEmail = user.email
+                self.userName = user.displayName ?? user.email
+            }
+        }
+    }
+    
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
+            DispatchQueue.main.async {
+                self.isSignedIn = false
+                self.userID = nil
+                self.userEmail = nil
+                self.userName = nil
+            }
+        } catch {
+            print("❌ 로그아웃 실패: \(error.localizedDescription)")
+        }
+    }
+    
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first?.windows.first ?? UIWindow()
+    }
+    
+    // ✅ Apple 로그인용 난수(Nonce) 생성
+    func randomNonceString(length: Int = 32) -> String {
+        precondition(length > 0)
+        var randomBytes = [UInt8](repeating: 0, count: length)
+        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
+        if errorCode != errSecSuccess {
+            fatalError("난수 생성 실패: SecRandomCopyBytes 오류 코드 \(errorCode)")
+        }
+        
+        let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+        let nonce = randomBytes.map { byte in
+            charset[Int(byte) % charset.count]
+        }
+        return String(nonce)
+    }
+    
+    // ✅ SHA256 해싱 (Apple 로그인 보안용)
+    func sha256(_ input: String) -> String {
+        let inputData = Data(input.utf8)
+        let hashedData = SHA256.hash(data: inputData)
+        return hashedData.map { String(format: "%02x", $0) }.joined()
     }
 }

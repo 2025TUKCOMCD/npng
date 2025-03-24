@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4A1CE3502D897D1100B5427D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A1CE34F2D897D1100B5427D /* GoogleService-Info.plist */; };
+		C2CFBDDA0719A4F3E4F37FF2 /* Pods_Play_Wrist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A08E24B2EE1C0A3A51FA419 /* Pods_Play_Wrist.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		4A54A4E82D4CEC27003EE512 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -38,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4A08E24B2EE1C0A3A51FA419 /* Pods_Play_Wrist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Play_Wrist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A1CE34F2D897D1100B5427D /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4A54A4D32D4CEC26003EE512 /* Play_Wrist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Play_Wrist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A54A4E72D4CEC27003EE512 /* Play_WristTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Play_WristTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A54A4F12D4CEC27003EE512 /* Play_WristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Play_WristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -45,6 +52,8 @@
 		4A8B55492D5B8F7D000BC329 /* Play_Wrist_Watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Play_Wrist_Watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A8B55582D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Play_Wrist_Watch Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A8B55622D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Play_Wrist_Watch Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6917B10B6A7603A8BB3D626B /* Pods-Play_Wrist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Play_Wrist.release.xcconfig"; path = "Target Support Files/Pods-Play_Wrist/Pods-Play_Wrist.release.xcconfig"; sourceTree = "<group>"; };
+		DD7B750035840D3B59A9C4A5 /* Pods-Play_Wrist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Play_Wrist.debug.xcconfig"; path = "Target Support Files/Pods-Play_Wrist/Pods-Play_Wrist.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -113,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2CFBDDA0719A4F3E4F37FF2 /* Pods_Play_Wrist.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -172,6 +182,9 @@
 				4A8B555B2D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppTests */,
 				4A8B55652D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppUITests */,
 				4A54A4D42D4CEC26003EE512 /* Products */,
+				6489E71F895A82439E097390 /* Pods */,
+				4D27CCBE359248E459A5CC14 /* Frameworks */,
+				4A1CE34F2D897D1100B5427D /* GoogleService-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -189,6 +202,23 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4D27CCBE359248E459A5CC14 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4A08E24B2EE1C0A3A51FA419 /* Pods_Play_Wrist.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6489E71F895A82439E097390 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				DD7B750035840D3B59A9C4A5 /* Pods-Play_Wrist.debug.xcconfig */,
+				6917B10B6A7603A8BB3D626B /* Pods-Play_Wrist.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -196,9 +226,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 4A54A4FA2D4CEC27003EE512 /* Build configuration list for PBXNativeTarget "Play_Wrist" */;
 			buildPhases = (
+				EB72B7949AF57217CE2F7DBB /* [CP] Check Pods Manifest.lock */,
 				4A54A4CF2D4CEC26003EE512 /* Sources */,
 				4A54A4D02D4CEC26003EE512 /* Frameworks */,
 				4A54A4D12D4CEC26003EE512 /* Resources */,
+				1273025CD795DE0EE8D051A1 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -208,8 +240,6 @@
 				4A54A4D52D4CEC26003EE512 /* Play_Wrist */,
 			);
 			name = Play_Wrist;
-			packageProductDependencies = (
-			);
 			productName = Play_Wrist;
 			productReference = 4A54A4D32D4CEC26003EE512 /* Play_Wrist.app */;
 			productType = "com.apple.product-type.application";
@@ -231,8 +261,6 @@
 				4A54A4EA2D4CEC27003EE512 /* Play_WristTests */,
 			);
 			name = Play_WristTests;
-			packageProductDependencies = (
-			);
 			productName = Play_WristTests;
 			productReference = 4A54A4E72D4CEC27003EE512 /* Play_WristTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -254,8 +282,6 @@
 				4A54A4F42D4CEC27003EE512 /* Play_WristUITests */,
 			);
 			name = Play_WristUITests;
-			packageProductDependencies = (
-			);
 			productName = Play_WristUITests;
 			productReference = 4A54A4F12D4CEC27003EE512 /* Play_WristUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -276,8 +302,6 @@
 				4A8B553B2D5B8F60000BC329 /* Play_Wrist_Watch */,
 			);
 			name = Play_Wrist_Watch;
-			packageProductDependencies = (
-			);
 			productName = Play_Wrist_Watch;
 			productReference = 4A8B553A2D5B8F5F000BC329 /* Play_Wrist_Watch.appex */;
 			productType = "com.apple.product-type.extensionkit-extension";
@@ -298,8 +322,6 @@
 				4A8B554A2D5B8F7D000BC329 /* Play_Wrist_Watch Watch App */,
 			);
 			name = "Play_Wrist_Watch Watch App";
-			packageProductDependencies = (
-			);
 			productName = "Play_Wrist_Watch Watch App";
 			productReference = 4A8B55492D5B8F7D000BC329 /* Play_Wrist_Watch Watch App.app */;
 			productType = "com.apple.product-type.application";
@@ -321,8 +343,6 @@
 				4A8B555B2D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppTests */,
 			);
 			name = "Play_Wrist_Watch Watch AppTests";
-			packageProductDependencies = (
-			);
 			productName = "Play_Wrist_Watch Watch AppTests";
 			productReference = 4A8B55582D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -344,8 +364,6 @@
 				4A8B55652D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppUITests */,
 			);
 			name = "Play_Wrist_Watch Watch AppUITests";
-			packageProductDependencies = (
-			);
 			productName = "Play_Wrist_Watch Watch AppUITests";
 			productReference = 4A8B55622D5B8F7E000BC329 /* Play_Wrist_Watch Watch AppUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -417,6 +435,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A1CE3502D897D1100B5427D /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,6 +482,48 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1273025CD795DE0EE8D051A1 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Play_Wrist/Pods-Play_Wrist-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Play_Wrist/Pods-Play_Wrist-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Play_Wrist/Pods-Play_Wrist-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		EB72B7949AF57217CE2F7DBB /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Play_Wrist-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		4A54A4CF2D4CEC26003EE512 /* Sources */ = {
@@ -542,6 +603,7 @@
 /* Begin XCBuildConfiguration section */
 		4A54A4FB2D4CEC27003EE512 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DD7B750035840D3B59A9C4A5 /* Pods-Play_Wrist.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -549,7 +611,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Play_Wrist/Preview Content\"";
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Play_Wrist/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -557,6 +621,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -572,6 +637,7 @@
 		};
 		4A54A4FC2D4CEC27003EE512 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6917B10B6A7603A8BB3D626B /* Pods-Play_Wrist.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -579,7 +645,9 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Play_Wrist/Preview Content\"";
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Play_Wrist/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -587,6 +655,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

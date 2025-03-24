@@ -83,10 +83,17 @@ struct HeartRateView: View {
             Spacer()
 
             if heartRateMonitor.simulatedHeartRate >= 110 {
+<<<<<<< HEAD
+                Text("미션 완료!!")
+                    .foregroundColor(.red)
+            } else {
+                Text("미션 실패!!")
+=======
                 Text("🚨 심박수가 너무 높습니다!")
                     .foregroundColor(.red)
             } else {
                 Text("💖 정상 범위입니다.")
+>>>>>>> 4fb0835 (Local changes before pulling remote)
                     .foregroundColor(.blue)
             }
 
