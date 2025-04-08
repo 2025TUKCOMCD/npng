@@ -62,31 +62,34 @@ struct LandingView: View {
 }
 
 // ✅ 로그인 후 메인 화면
+import SwiftUI
+
 struct MainView: View {
     @ObservedObject var viewModel: AppleSignInViewModel
     var userName: String
-    
+
     @State private var showProfile = false
-    
+    @State private var goToGameSelect = false
+
     var body: some View {
         VStack {
-            // 🔹 상단 네비게이션 바
+            // 🔹 상단 바
             HStack {
                 Text("\(userName)님")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                     .padding(.leading, 10)
-                
+
                 Spacer()
-                
+
                 Text("Play Wrist")
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
-                
+
                 Spacer()
-                
+
                 Button(action: {
                     viewModel.signOut()
                 }) {
@@ -100,14 +103,22 @@ struct MainView: View {
             .background(Color.purple)
 
             Spacer()
-            
+
+            // 🔸 중앙 텍스트
             Text("Play Fun!")
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .foregroundColor(.purple)
-            
+
             VStack(spacing: 20) {
-                Button(action: {}) {
+                // ✅ NavigationLink → GameSelectView 이동
+                NavigationLink(destination: GameSelectView(), isActive: $goToGameSelect) {
+                    EmptyView()
+                }
+
+                Button(action: {
+                    goToGameSelect = true
+                }) {
                     Text("방 만들기")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -115,8 +126,10 @@ struct MainView: View {
                         .foregroundColor(.white)
                         .cornerRadius(10)
                 }
-                
-                Button(action: {}) {
+
+                Button(action: {
+                    // 추후 방 찾기 기능 연결
+                }) {
                     Text("방 찾기")
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -126,10 +139,10 @@ struct MainView: View {
                 }
             }
             .padding(.horizontal, 40)
-            
+
             Spacer()
-            
-            // 🔹 하단 탭 바
+
+            // 🔹 하단 탭바
             HStack {
                 Spacer()
                 Button(action: {}) {
@@ -168,7 +181,6 @@ struct MainView: View {
         .background(Color.purple.opacity(0.1).edgesIgnoringSafeArea(.all))
     }
 }
-
 struct MyProfileView: View {
     @ObservedObject var viewModel: AppleSignInViewModel
 
@@ -249,6 +261,145 @@ struct MyProfileView: View {
         }
         .navigationTitle("내 정보")
         .background(Color.white.ignoresSafeArea())
+    }
+}
+
+struct GameSelectView: View {
+    @State private var selectedGame = ""
+    @State private var navigateToRoomSetup = false
+
+    var body: some View {
+        VStack(spacing: 30) {
+            Text("게임 선택")
+                .font(.title)
+
+            Button(action: {
+                selectedGame = "Bomb Party"
+                navigateToRoomSetup = true
+            }) {
+                HStack {
+                    Image(systemName: "flame.fill")
+                    Text("Bomb Party")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.purple.opacity(0.2))
+                .cornerRadius(12)
+            }
+
+            Button(action: {
+                selectedGame = "Mafia Game"
+                navigateToRoomSetup = true
+            }) {
+                HStack {
+                    Image(systemName: "person.3.fill")
+                    Text("Mafia Game")
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.purple.opacity(0.2))
+                .cornerRadius(12)
+            }
+
+            NavigationLink(
+                destination: RoomSetupView(selectedGame: selectedGame),
+                isActive: $navigateToRoomSetup
+            ) {
+                EmptyView()
+            }
+        }
+        .padding()
+        .navigationTitle("게임 선택")
+    }
+}
+struct RoomSetupView: View {
+    var selectedGame: String
+
+    @State private var roomTitle = ""
+    @State private var password = ""
+    @State private var playerCount = "4"
+    @State private var navigateToLobby = false
+
+    var body: some View {
+        VStack(spacing: 20) {
+            TextField("방 제목", text: $roomTitle)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+            SecureField("비밀번호", text: $password)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+            TextField("인원 수", text: $playerCount)
+                .keyboardType(.numberPad)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+            Button(action: {
+                navigateToLobby = true
+            }) {
+                Image(systemName: "arrow.right.circle.fill")
+                    .font(.system(size: 50))
+                    .foregroundColor(.purple)
+            }
+
+            NavigationLink(
+                destination: GameLobbyView(
+                    roomTitle: roomTitle,
+                    gameTitle: selectedGame,
+                    playerCount: Int(playerCount) ?? 4
+                ),
+                isActive: $navigateToLobby
+            ) {
+                EmptyView()
+            }
+        }
+        .padding()
+        .navigationTitle("방 정보 입력")
+    }
+}
+
+struct GameLobbyView: View {
+    let roomTitle: String
+    let gameTitle: String
+    let playerCount: Int
+    
+    var body: some View {
+        VStack {
+            Text(roomTitle)
+                .font(.title2)
+                .padding(.top)
+            Text(gameTitle)
+                .foregroundColor(.blue)
+                .padding(.bottom)
+
+            HStack {
+                VStack {
+                    ForEach(1...playerCount/2, id: \.self) { i in
+                        Text("user \(i)").padding()
+                    }
+                }
+                Spacer()
+                VStack {
+                    ForEach(playerCount/2+1...playerCount, id: \.self) { i in
+                        Text("user \(i)").padding()
+                    }
+                }
+            }
+            .padding(.horizontal)
+
+            Spacer()
+
+            Button(action: {
+                // Start game logic
+            }) {
+                Text("Start")
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.purple.opacity(0.5))
+                    .cornerRadius(10)
+                    .foregroundColor(.white)
+            }
+            .padding()
+        }
+        .navigationTitle("대기방")
     }
 }
 
