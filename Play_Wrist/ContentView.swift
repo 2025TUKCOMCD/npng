@@ -10,6 +10,7 @@ struct ContentView: View {
         NavigationView {
             if viewModel.isSignedIn {
                 MainView(viewModel: viewModel, userName: viewModel.userName ?? "사용자")
+                    .environmentObject(viewModel)
             } else {
                 LandingView(viewModel: viewModel)
             }
@@ -112,7 +113,7 @@ struct MainView: View {
 
             VStack(spacing: 20) {
                 // ✅ NavigationLink → GameSelectView 이동
-                NavigationLink(destination: GameSelectView(), isActive: $goToGameSelect) {
+                NavigationLink(destination: GameSelectView().environmentObject(viewModel), isActive: $goToGameSelect){
                     EmptyView()
                 }
 
@@ -265,6 +266,7 @@ struct MyProfileView: View {
 }
 
 struct GameSelectView: View {
+    @EnvironmentObject var viewModel: AppleSignInViewModel
     @State private var selectedGame = ""
     @State private var navigateToRoomSetup = false
 
@@ -302,7 +304,7 @@ struct GameSelectView: View {
             }
 
             NavigationLink(
-                destination: RoomSetupView(selectedGame: selectedGame),
+                destination: RoomSetupView(selectedGame: selectedGame).environmentObject(viewModel),
                 isActive: $navigateToRoomSetup
             ) {
                 EmptyView()
@@ -312,8 +314,11 @@ struct GameSelectView: View {
         .navigationTitle("게임 선택")
     }
 }
+
 struct RoomSetupView: View {
     var selectedGame: String
+    @EnvironmentObject var authViewModel: AppleSignInViewModel
+    @StateObject private var roomViewModel = RoomViewModel()
 
     @State private var roomTitle = ""
     @State private var password = ""
@@ -333,6 +338,14 @@ struct RoomSetupView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
             Button(action: {
+                let host = authViewModel.userName ?? "user1"
+                roomViewModel.createRoom(
+                    title: roomTitle,
+                    game: selectedGame,
+                    password: password,
+                    maxPlayers: Int(playerCount) ?? 4,
+                    hostName: host
+                )
                 navigateToLobby = true
             }) {
                 Image(systemName: "arrow.right.circle.fill")
@@ -341,11 +354,7 @@ struct RoomSetupView: View {
             }
 
             NavigationLink(
-                destination: GameLobbyView(
-                    roomTitle: roomTitle,
-                    gameTitle: selectedGame,
-                    playerCount: Int(playerCount) ?? 4
-                ),
+                destination: GameLobbyView(room: roomViewModel.room ?? Room(title: "", game: "", password: "", maxPlayers: 4, hostName: "", players: [])).environmentObject(authViewModel),
                 isActive: $navigateToLobby
             ) {
                 EmptyView()
@@ -357,29 +366,37 @@ struct RoomSetupView: View {
 }
 
 struct GameLobbyView: View {
-    let roomTitle: String
-    let gameTitle: String
-    let playerCount: Int
-    
+    let room: Room
+    @EnvironmentObject var authViewModel: AppleSignInViewModel
+
     var body: some View {
-        VStack {
-            Text(roomTitle)
+        VStack(spacing: 16) {
+            Text(room.title)
                 .font(.title2)
                 .padding(.top)
-            Text(gameTitle)
+            Text(room.game)
                 .foregroundColor(.blue)
                 .padding(.bottom)
 
+            Text("방장: \(room.hostName)")
+                .font(.headline)
+                .padding(.bottom, 10)
+
+            let fullPlayers = room.players + Array(repeating: "", count: max(0, room.maxPlayers - room.players.count))
+            let mid = fullPlayers.count / 2
+            let left = fullPlayers.prefix(mid)
+            let right = fullPlayers.suffix(from: mid)
+
             HStack {
-                VStack {
-                    ForEach(1...playerCount/2, id: \.self) { i in
-                        Text("user \(i)").padding()
+                VStack(alignment: .leading) {
+                    ForEach(Array(left.enumerated()), id: \.offset) { _, player in
+                        Text(player.isEmpty ? "대기 중..." : player).padding()
                     }
                 }
                 Spacer()
-                VStack {
-                    ForEach(playerCount/2+1...playerCount, id: \.self) { i in
-                        Text("user \(i)").padding()
+                VStack(alignment: .trailing) {
+                    ForEach(Array(right.enumerated()), id: \.offset) { _, player in
+                        Text(player.isEmpty ? "대기 중..." : player).padding()
                     }
                 }
             }
@@ -387,19 +404,41 @@ struct GameLobbyView: View {
 
             Spacer()
 
-            Button(action: {
-                // Start game logic
-            }) {
-                Text("Start")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.purple.opacity(0.5))
-                    .cornerRadius(10)
-                    .foregroundColor(.white)
+            Button("Start") {
+                print("게임 시작")
             }
+            .frame(maxWidth: .infinity)
             .padding()
+            .background(Color.purple)
+            .foregroundColor(.white)
+            .cornerRadius(10)
         }
+        .padding()
         .navigationTitle("대기방")
+    }
+}
+
+struct Room {
+    let title: String
+    let game: String
+    let password: String
+    let maxPlayers: Int
+    let hostName: String
+    var players: [String]
+}
+
+class RoomViewModel: ObservableObject {
+    @Published var room: Room?
+
+    func createRoom(title: String, game: String, password: String, maxPlayers: Int, hostName: String) {
+        room = Room(
+            title: title,
+            game: game,
+            password: password,
+            maxPlayers: maxPlayers,
+            hostName: hostName,
+            players: [hostName]
+        )
     }
 }
 
