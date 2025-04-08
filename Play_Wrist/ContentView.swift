@@ -274,47 +274,99 @@ struct GameSelectView: View {
         VStack(spacing: 30) {
             Text("게임 선택")
                 .font(.title)
+                .padding(.top)
 
-            Button(action: {
-                selectedGame = "Bomb Party"
-                navigateToRoomSetup = true
-            }) {
-                HStack {
-                    Image(systemName: "flame.fill")
-                    Text("Bomb Party")
+            VStack(spacing: 20) {
+                // 🔸 Bomb Party 카드
+                Button(action: {
+                    selectedGame = "Bomb Party"
+                    navigateToRoomSetup = true
+                }) {
+                    HStack(spacing: 15) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.purple.opacity(0.2))
+                                .frame(width: 60, height: 60)
+
+                            Image(systemName: "flame.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.purple)
+                        }
+
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Bomb Party")
+                                .font(.headline)
+                                .foregroundColor(.purple)
+
+                            Text("랜덤 미션 폭탄 돌리기 게임")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.purple, lineWidth: 1)
+                    )
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.purple.opacity(0.2))
-                .cornerRadius(12)
-            }
 
-            Button(action: {
-                selectedGame = "Mafia Game"
-                navigateToRoomSetup = true
-            }) {
-                HStack {
-                    Image(systemName: "person.3.fill")
-                    Text("Mafia Game")
+                // 🔸 Mafia Game 카드
+                Button(action: {
+                    selectedGame = "Mafia Game"
+                    navigateToRoomSetup = true
+                }) {
+                    HStack(spacing: 15) {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.purple.opacity(0.2))
+                                .frame(width: 60, height: 60)
+
+                            Image(systemName: "person.3.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 30, height: 30)
+                                .foregroundColor(.purple)
+                        }
+
+                        VStack(alignment: .leading, spacing: 5) {
+                            Text("Mafia Game")
+                                .font(.headline)
+                                .foregroundColor(.purple)
+
+                            Text("마피아 게임을 현실에서!")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+
+                        Spacer()
+                    }
+                    .padding()
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .stroke(Color.purple, lineWidth: 1)
+                    )
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(Color.purple.opacity(0.2))
-                .cornerRadius(12)
             }
+            .padding(.horizontal)
 
+            // 👉 다음 화면으로 연결
             NavigationLink(
                 destination: RoomSetupView(selectedGame: selectedGame).environmentObject(viewModel),
                 isActive: $navigateToRoomSetup
             ) {
                 EmptyView()
             }
+
+            Spacer()
         }
         .padding()
         .navigationTitle("게임 선택")
     }
 }
-
 struct RoomSetupView: View {
     var selectedGame: String
     @EnvironmentObject var authViewModel: AppleSignInViewModel
