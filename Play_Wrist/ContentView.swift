@@ -65,7 +65,9 @@ struct LandingView: View {
 struct MainView: View {
     @ObservedObject var viewModel: AppleSignInViewModel
     var userName: String
-
+    
+    @State private var showProfile = false
+    
     var body: some View {
         VStack {
             // 🔹 상단 네비게이션 바
@@ -127,15 +129,36 @@ struct MainView: View {
             
             Spacer()
             
+            // 🔹 하단 탭 바
             HStack {
                 Spacer()
-                Button(action: {}) { Image(systemName: "house.fill").font(.title) }
+                Button(action: {}) {
+                    Image(systemName: "house.fill")
+                        .font(.title)
+                }
                 Spacer()
-                Button(action: {}) { Image(systemName: "magnifyingglass").font(.title) }
+                Button(action: {}) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.title)
+                }
                 Spacer()
-                Button(action: {}) { Image(systemName: "book.fill").font(.title) }
+                Button(action: {
+                    showProfile = true
+                }) {
+                    Image(systemName: "book.fill")
+                        .font(.title)
+                }
+                .background(
+                    NavigationLink(destination: MyProfileView(viewModel: viewModel), isActive: $showProfile) {
+                        EmptyView()
+                    }
+                    .hidden()
+                )
                 Spacer()
-                Button(action: {}) { Image(systemName: "gearshape.fill").font(.title) }
+                Button(action: {}) {
+                    Image(systemName: "gearshape.fill")
+                        .font(.title)
+                }
                 Spacer()
             }
             .padding()
@@ -146,13 +169,131 @@ struct MainView: View {
     }
 }
 
-// ✅ Apple 로그인 & Firebase 관리 뷰 모델 (이제 ContentView.swift 안에 포함)
+struct MyProfileView: View {
+    @ObservedObject var viewModel: AppleSignInViewModel
+
+    var body: some View {
+        VStack(spacing: 30) {
+            Image(systemName: "person.circle.fill")
+                .resizable()
+                .frame(width: 100, height: 100)
+                .foregroundColor(.purple)
+                .padding(.top, 40)
+
+            VStack(alignment: .leading, spacing: 15) {
+                HStack {
+                    Image(systemName: "person.fill")
+                    Text("이름: \(viewModel.userName ?? "알 수 없음")")
+                }
+
+                HStack {
+                    Image(systemName: "trophy.fill")
+                    Text("플레이 통계")
+                }
+
+                HStack {
+                    Text("🏆 승: \(viewModel.winCount)")
+                    Text("❌ 패: \(viewModel.loseCount)")
+                    Text("📊 승률: \(String(format: "%.1f%%", viewModel.winRate))")
+                }
+            }
+            .font(.body)
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+            .padding(.horizontal)
+
+            // ✅ 테스트용 승/패 버튼
+            HStack(spacing: 20) {
+                Button(action: {
+                    viewModel.recordWin()
+                }) {
+                    Text("승리 추가")
+                        .padding()
+                        .frame(width: 120)
+                        .background(Color.green)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+
+                Button(action: {
+                    viewModel.recordLose()
+                }) {
+                    Text("패배 추가")
+                        .padding()
+                        .frame(width: 120)
+                        .background(Color.red)
+                        .foregroundColor(.white)
+                        .cornerRadius(8)
+                }
+            }
+
+            Spacer()
+
+            // 로그아웃 버튼
+            Button(action: {
+                viewModel.signOut()
+            }) {
+                Text("로그아웃")
+                    .fontWeight(.semibold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.red)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.horizontal)
+
+            Spacer()
+        }
+        .navigationTitle("내 정보")
+        .background(Color.white.ignoresSafeArea())
+    }
+}
+
+// ✅ Apple 로그인 & Firebase 관리 뷰 모델
 class AppleSignInViewModel: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
     
     @Published var isSignedIn = false
     @Published var userID: String?
     @Published var userEmail: String?
     @Published var userName: String?
+    
+    @Published var winCount: Int = 0
+        @Published var loseCount: Int = 0
+        
+        // ✅ 승률 계산
+        var winRate: Double {
+            let total = winCount + loseCount
+            return total == 0 ? 0 : (Double(winCount) / Double(total) * 100)
+        }
+
+        // ✅ 수동 기록 함수
+        func recordWin() {
+            winCount += 1
+        }
+
+        func recordLose() {
+            loseCount += 1
+        }
+
+        // 로그아웃 시 초기화
+        func signOut() {
+            do {
+                try Auth.auth().signOut()
+                DispatchQueue.main.async {
+                    self.isSignedIn = false
+                    self.userID = nil
+                    self.userEmail = nil
+                    self.userName = nil
+                    self.winCount = 0 // 승패 초기화
+                    self.loseCount = 0
+                }
+            } catch {
+                print("❌ 로그아웃 실패: \(error.localizedDescription)")
+            }
+        }
     
     fileprivate var currentNonce: String?
     
@@ -227,6 +368,7 @@ class AppleSignInViewModel: NSObject, ObservableObject, ASAuthorizationControlle
         }
     }
     
+    
     func checkAuthState() {
         if let user = Auth.auth().currentUser {
             DispatchQueue.main.async {
@@ -238,19 +380,6 @@ class AppleSignInViewModel: NSObject, ObservableObject, ASAuthorizationControlle
         }
     }
     
-    func signOut() {
-        do {
-            try Auth.auth().signOut()
-            DispatchQueue.main.async {
-                self.isSignedIn = false
-                self.userID = nil
-                self.userEmail = nil
-                self.userName = nil
-            }
-        } catch {
-            print("❌ 로그아웃 실패: \(error.localizedDescription)")
-        }
-    }
     
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return UIApplication.shared.connectedScenes
@@ -281,3 +410,4 @@ class AppleSignInViewModel: NSObject, ObservableObject, ASAuthorizationControlle
         return hashedData.map { String(format: "%02x", $0) }.joined()
     }
 }
+ 
