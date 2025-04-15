@@ -379,22 +379,15 @@ struct RoomSetupView: View {
     @State private var roomTitle = ""
     @State private var password = ""
     @State private var playerCount = "4"
-    @State private var navigateToLobby = false
+    @State private var shouldNavigate = false
 
     var body: some View {
-        ZStack {
-            Color.gray.opacity(0.3).ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color.gray.opacity(0.3).ignoresSafeArea()
 
-            VStack {
-                Spacer()
-
-                ZStack(alignment: .topTrailing) {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(Color.white)
-                        .padding(.horizontal, 24)
-                        .shadow(radius: 8)
-
-                    VStack(alignment: .leading, spacing: 20) {
+                ScrollView {
+                    VStack(spacing: 30) {
                         // ❌ 닫기 버튼
                         HStack {
                             Spacer()
@@ -406,50 +399,21 @@ struct RoomSetupView: View {
                                     .foregroundColor(.purple)
                             }
                         }
+                        .padding(.top)
 
-                        Group {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("방 제목")
-                                    .font(.headline)
-                                    .foregroundColor(.purple)
-                                    .padding(.leading, 2)
-
-                                TextField("재밌는 게임 해요~", text: $roomTitle)
-                                    .padding()
-                                    .font(.body)
-                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.purple, lineWidth: 1))
-                            }
-
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("비밀번호")
-                                    .font(.headline)
-                                    .foregroundColor(.purple)
-                                    .padding(.leading, 2)
-
-                                SecureField("***********", text: $password)
-                                    .padding()
-                                    .font(.body)
-                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.purple, lineWidth: 1))
-                            }
-
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("인원")
-                                    .font(.headline)
-                                    .foregroundColor(.purple)
-                                    .padding(.leading, 2)
-
-                                TextField("8", text: $playerCount)
-                                    .keyboardType(.numberPad)
-                                    .padding()
-                                    .font(.body)
-                                    .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.purple, lineWidth: 1))
-                            }
+                        // 카드형 입력 영역
+                        VStack(alignment: .leading, spacing: 20) {
+                            inputSection(title: "방 제목", placeholder: "재밌는 게임 해요~", text: $roomTitle)
+                            inputSecureSection(title: "비밀번호", placeholder: "********", text: $password)
+                            inputSection(title: "인원 수", placeholder: "4", text: $playerCount, keyboard: .numberPad)
                         }
+                        .padding()
+                        .background(Color.white)
+                        .cornerRadius(16)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
 
-                        Spacer()
-                            .frame(height: 20)
-
-                        // ▶️ 다음 버튼
+                        // 다음 버튼
                         HStack {
                             Spacer()
                             Button(action: {
@@ -461,13 +425,13 @@ struct RoomSetupView: View {
                                     maxPlayers: Int(playerCount) ?? 4,
                                     hostName: host
                                 )
-                                navigateToLobby = true
+                                shouldNavigate = true
                             }) {
                                 ZStack {
                                     Circle()
                                         .fill(Color.purple)
                                         .frame(width: 60, height: 60)
-                                        .shadow(color: Color.purple.opacity(0.3), radius: 10, x: 0, y: 5)
+                                        .shadow(radius: 10)
 
                                     Image(systemName: "arrow.right")
                                         .foregroundColor(.white)
@@ -475,22 +439,53 @@ struct RoomSetupView: View {
                                 }
                             }
                         }
+                        .padding(.trailing, 24)
+                        .padding(.bottom, 40)
+
+                        // NavigationLink로 화면 이동
+                        NavigationLink(
+                            destination: GameLobbyView(room: roomViewModel.room ?? Room(
+                                title: "에러", game: selectedGame, password: "", maxPlayers: 4, hostName: "???", players: [])
+                            ).environmentObject(authViewModel),
+                            isActive: $shouldNavigate
+                        ) {
+                            EmptyView()
+                        }
                     }
-                    .padding(24)
                 }
-
-                Spacer()
+                .scrollDismissesKeyboard(.interactively)
             }
-
-            // ✅ Navigation 연결
-            NavigationLink(
-                destination: GameLobbyView(room: roomViewModel.room ?? Room(title: "", game: "", password: "", maxPlayers: 4, hostName: "", players: [])).environmentObject(authViewModel),
-                isActive: $navigateToLobby
-            ) {
-                EmptyView()
-            }
+            .navigationTitle("방 만들기")
         }
-        .navigationTitle("Play Wrist")
+    }
+
+    // 일반 텍스트 입력 필드
+    private func inputSection(title: String, placeholder: String, text: Binding<String>, keyboard: UIKeyboardType = .default) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.purple)
+
+            TextField(placeholder, text: text)
+                .keyboardType(keyboard)
+                .padding()
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(10)
+        }
+    }
+
+    // 비밀번호 필드
+    private func inputSecureSection(title: String, placeholder: String, text: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+                .foregroundColor(.purple)
+
+            SecureField(placeholder, text: text)
+                .padding()
+                .background(Color(UIColor.systemGray6))
+                .cornerRadius(10)
+        }
     }
 }
 
