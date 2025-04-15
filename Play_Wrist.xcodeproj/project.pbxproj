@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4A1CE3502D897D1100B5427D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A1CE34F2D897D1100B5427D /* GoogleService-Info.plist */; };
+		4AA6B2CD2DAE2AB1004B6FA6 /* Play_Wrist_Watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 4A8B55492D5B8F7D000BC329 /* Play_Wrist_Watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C2CFBDDA0719A4F3E4F37FF2 /* Pods_Play_Wrist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A08E24B2EE1C0A3A51FA419 /* Pods_Play_Wrist.framework */; };
 /* End PBXBuildFile section */
 
@@ -40,7 +41,35 @@
 			remoteGlobalIDString = 4A8B55482D5B8F7D000BC329;
 			remoteInfo = "Play_Wrist_Watch Watch App";
 		};
+		4AA6B2CE2DAE2AB1004B6FA6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A54A4CB2D4CEC26003EE512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A8B55482D5B8F7D000BC329;
+			remoteInfo = "Play_Wrist_Watch Watch App";
+		};
+		4AA6B2D12DAE2ADD004B6FA6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A54A4CB2D4CEC26003EE512 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A8B55482D5B8F7D000BC329;
+			remoteInfo = "Play_Wrist_Watch Watch App";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4AA6B2D02DAE2AB1004B6FA6 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				4AA6B2CD2DAE2AB1004B6FA6 /* Play_Wrist_Watch Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		4A08E24B2EE1C0A3A51FA419 /* Pods_Play_Wrist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Play_Wrist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -231,10 +260,13 @@
 				4A54A4D02D4CEC26003EE512 /* Frameworks */,
 				4A54A4D12D4CEC26003EE512 /* Resources */,
 				1273025CD795DE0EE8D051A1 /* [CP] Embed Pods Frameworks */,
+				4AA6B2D02DAE2AB1004B6FA6 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				4AA6B2CF2DAE2AB1004B6FA6 /* PBXTargetDependency */,
+				4AA6B2D22DAE2ADD004B6FA6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				4A54A4D52D4CEC26003EE512 /* Play_Wrist */,
@@ -597,6 +629,16 @@
 			isa = PBXTargetDependency;
 			target = 4A8B55482D5B8F7D000BC329 /* Play_Wrist_Watch Watch App */;
 			targetProxy = 4A8B55632D5B8F7E000BC329 /* PBXContainerItemProxy */;
+		};
+		4AA6B2CF2DAE2AB1004B6FA6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A8B55482D5B8F7D000BC329 /* Play_Wrist_Watch Watch App */;
+			targetProxy = 4AA6B2CE2DAE2AB1004B6FA6 /* PBXContainerItemProxy */;
+		};
+		4AA6B2D22DAE2ADD004B6FA6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A8B55482D5B8F7D000BC329 /* Play_Wrist_Watch Watch App */;
+			targetProxy = 4AA6B2D12DAE2ADD004B6FA6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
