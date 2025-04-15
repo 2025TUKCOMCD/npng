@@ -489,38 +489,64 @@ struct RoomSetupView: View {
     }
 }
 
+import SwiftUI
+
 struct GameLobbyView: View {
     let room: Room
     @EnvironmentObject var authViewModel: AppleSignInViewModel
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         VStack(spacing: 16) {
-            Text(room.title)
-                .font(.title2)
-                .padding(.top)
-            Text(room.game)
-                .foregroundColor(.blue)
-                .padding(.bottom)
-
-            Text("방장: \(room.hostName)")
-                .font(.headline)
-                .padding(.bottom, 10)
-
-            let fullPlayers = room.players + Array(repeating: "", count: max(0, room.maxPlayers - room.players.count))
-            let mid = fullPlayers.count / 2
-            let left = fullPlayers.prefix(mid)
-            let right = fullPlayers.suffix(from: mid)
-
+            // 상단 바
             HStack {
-                VStack(alignment: .leading) {
-                    ForEach(Array(left.enumerated()), id: \.offset) { _, player in
-                        Text(player.isEmpty ? "대기 중..." : player).padding()
+                Button(action: {
+                    dismiss()
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "chevron.left")
+                        Text("게임 선택")
                     }
+                    .foregroundColor(.blue)
                 }
                 Spacer()
-                VStack(alignment: .trailing) {
-                    ForEach(Array(right.enumerated()), id: \.offset) { _, player in
-                        Text(player.isEmpty ? "대기 중..." : player).padding()
+                Text("Play Wrist")
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                Spacer()
+                Image(systemName: "line.horizontal.3")
+                    .foregroundColor(.white)
+            }
+            .padding()
+            .background(Color.purple)
+
+            // 게임명 카드
+            Text(room.game)
+                .foregroundColor(.purple)
+                .font(.headline)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 20)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.purple, lineWidth: 1)
+                )
+
+            // 사용자 카드
+            let fullPlayers = room.players + Array(repeating: "", count: max(0, room.maxPlayers - room.players.count))
+            let mid = fullPlayers.count / 2
+            let left = Array(fullPlayers.prefix(mid))
+            let right = Array(fullPlayers.suffix(from: mid))
+
+            HStack(alignment: .top, spacing: 20) {
+                VStack(spacing: 16) {
+                    ForEach(left.indices, id: \.self) { index in
+                        playerCard(name: left[index], isReady: true)
+                    }
+                }
+
+                VStack(spacing: 16) {
+                    ForEach(right.indices, id: \.self) { index in
+                        playerCard(name: right[index], isReady: true)
                     }
                 }
             }
@@ -528,17 +554,48 @@ struct GameLobbyView: View {
 
             Spacer()
 
-            Button("Start") {
+            // Start 버튼
+            Button(action: {
                 print("게임 시작")
+            }) {
+                Text("Start")
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.purple)
+                    .foregroundColor(.white)
+                    .cornerRadius(12)
             }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(Color.purple)
-            .foregroundColor(.white)
-            .cornerRadius(10)
+            .padding(.horizontal, 40)
+            .padding(.bottom, 30)
         }
+        .background(Color.white.ignoresSafeArea())
+        .navigationBarBackButtonHidden(true)
+    }
+
+    // ✅ 사용자 카드 안에 Ready 표시
+    func playerCard(name: String, isReady: Bool) -> some View {
+        VStack(spacing: 6) {
+            Image(systemName: "person.circle.fill")
+                .resizable()
+                .frame(width: 30, height: 30)
+                .foregroundColor(.purple)
+
+            Text(name.isEmpty ? "대기 중..." : name)
+                .font(.body)
+                .foregroundColor(.black)
+
+            if isReady {
+                Text("Ready")
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.orange)
+            }
+        }
+        .frame(width: 80, height: 90)
         .padding()
-        .navigationTitle("대기방")
+        .background(Color.purple.opacity(0.15))
+        .cornerRadius(16)
     }
 }
 
