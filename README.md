@@ -37,9 +37,10 @@
 ### 🔹 Tools
 [![Git](https://skillicons.dev/icons?i=git)](https://git-scm.com) 
 [![GitHub](https://skillicons.dev/icons?i=github)](https://github.com)
+[![Figma](https://skillicons.dev/icons?i=figma)](https://www.figma.com) 
 ![Xcode](https://img.shields.io/badge/Development-Xcode-blue)
   
-   Git   GitHub
+   Git   GitHub   Figma
 
 
 ## 시스템 구성도 (예비안)
