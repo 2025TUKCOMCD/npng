@@ -1,13 +1,13 @@
 //
-//  Play_WristUITestsLaunchTests.swift
-//  Play_WristUITests
+//  Play_Wrist_W_Watch_AppUITestsLaunchTests.swift
+//  Play_Wrist_W Watch AppUITests
 //
-//  Created by 김현수 on 4/19/25.
+//  Created by 김현수 on 4/20/25.
 //
 
 import XCTest
 
-final class Play_WristUITestsLaunchTests: XCTestCase {
+final class Play_Wrist_W_Watch_AppUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

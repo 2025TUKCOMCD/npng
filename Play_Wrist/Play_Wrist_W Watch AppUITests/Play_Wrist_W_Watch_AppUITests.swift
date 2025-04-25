@@ -1,13 +1,13 @@
 //
-//  Play_WristUITests.swift
-//  Play_WristUITests
+//  Play_Wrist_W_Watch_AppUITests.swift
+//  Play_Wrist_W Watch AppUITests
 //
-//  Created by 김현수 on 4/19/25.
+//  Created by 김현수 on 4/20/25.
 //
 
 import XCTest
 
-final class Play_WristUITests: XCTestCase {
+final class Play_Wrist_W_Watch_AppUITests: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
