@@ -7,7 +7,7 @@ struct GameLobbyView: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            // 상단 바
+            // ✅ 상단 바
             HStack {
                 Button(action: {
                     dismiss()
@@ -29,7 +29,7 @@ struct GameLobbyView: View {
             .padding()
             .background(Color.purple)
 
-            // 게임명 카드
+            // ✅ 게임명 카드
             Text(room.game)
                 .foregroundColor(.purple)
                 .font(.headline)
@@ -40,7 +40,7 @@ struct GameLobbyView: View {
                         .stroke(Color.purple, lineWidth: 1)
                 )
 
-            // 사용자 카드
+            // ✅ 사용자 카드 리스트
             let fullPlayers = room.players + Array(repeating: "", count: max(0, room.maxPlayers - room.players.count))
             let mid = fullPlayers.count / 2
             let left = Array(fullPlayers.prefix(mid))
@@ -63,17 +63,15 @@ struct GameLobbyView: View {
 
             Spacer()
 
-            // 버튼 영역: Start + Watch
-            HStack(spacing: 16) {
-                // ✅ Start 버튼
+            // ✅ 버튼 영역 (방장/유저 구분)
+            if authViewModel.userName == room.hostName {
+                // 방장 → Start 버튼
                 Button(action: {
-                    let maxPlayers = room.maxPlayers
-                    let players = (1...maxPlayers).map { "player\($0)" }
-                    let assignedPlayer = players.randomElement() ?? "player1"
+                    let userName = authViewModel.userName ?? "이름 없음"
 
                     let message: [String: Any] = [
-                        "event": "gameStart",
-                        "assignedPlayer": assignedPlayer,
+                        "event": "playerReady",
+                        "userName": userName,
                         "status": "Ready"
                     ]
 
@@ -87,8 +85,10 @@ struct GameLobbyView: View {
                         .foregroundColor(.white)
                         .cornerRadius(12)
                 }
-
-                // ✅ Watch 버튼
+                .padding(.horizontal, 40)
+                .padding(.bottom, 30)
+            } else {
+                // 일반 유저 → Ready 버튼
                 Button(action: {
                     let userName = authViewModel.userName ?? "이름 없음"
 
@@ -100,23 +100,23 @@ struct GameLobbyView: View {
 
                     PhoneWatchConnector.shared.send(message: message)
                 }) {
-                    Text("Watch")
+                    Text("Ready")
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.gray)
+                        .background(Color.orange)
                         .foregroundColor(.white)
                         .cornerRadius(12)
                 }
+                .padding(.horizontal, 40)
+                .padding(.bottom, 30)
             }
-            .padding(.horizontal, 40)
-            .padding(.bottom, 30)
         }
         .background(Color.white.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
     }
 
-    // ✅ 사용자 카드 뷰 함수 (body 바깥에 반드시 있어야 함!)
+    // ✅ 사용자 카드 뷰 함수
     func playerCard(name: String, isReady: Bool) -> some View {
         VStack(spacing: 6) {
             Image(systemName: "person.circle.fill")
