@@ -27,14 +27,28 @@ struct RoomListView: View {
             }
 
             NavigationLink(
-                destination: RoomJoinView(room: selectedRoom, roomViewModel: roomViewModel)
-                    .environmentObject(authViewModel),
+                destination: selectedRoom.map { room in
+                    RoomJoinView(room: room, roomViewModel: roomViewModel)
+                        .environmentObject(authViewModel)
+                },
                 isActive: $navigateToJoin
             ) {
                 EmptyView()
             }
         }
         .navigationTitle("방 찾기")
+        .onAppear {
+            if roomViewModel.rooms.isEmpty {
+                let testRoom = Room(
+                    title: "🛠 테스트용 예비방",
+                    game: "폭탄 넘기기",
+                    password: "test",
+                    maxPlayers: 4,
+                    hostName: "테스트유저",
+                    players: ["테스트유저"]
+                )
+                roomViewModel.rooms.append(testRoom)
+            }
+        }
     }
 }
-
