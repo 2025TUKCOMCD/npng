@@ -87,16 +87,18 @@ struct GameLobbyView: View {
                 .padding(.horizontal, 40)
                 .padding(.bottom, 30)
             } else {
-                // 🔥 일반 유저 → Ready 버튼
+                // 🔥 일반 유저 → Ready <-> Normal 토글 버튼
+                let userName = authViewModel.userName ?? "이름 없음"
+                let isReady = playerStates[userName] == "Ready"
+
                 Button(action: {
-                    let userName = authViewModel.userName ?? "이름 없음"
-                    playerStates[userName] = "Ready"
+                    playerStates[userName] = isReady ? "Normal" : "Ready"
                 }) {
-                    Text("Ready")
+                    Text(isReady ? "Normal" : "Ready")
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.orange)
+                        .background(isReady ? Color.gray : Color.orange)
                         .foregroundColor(.white)
                         .cornerRadius(12)
                 }
