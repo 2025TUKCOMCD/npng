@@ -43,21 +43,26 @@ struct GameLobbyView: View {
                 )
 
             // ✅ 사용자 카드 리스트
-            let fullPlayers = room.players + Array(repeating: "", count: max(0, room.maxPlayers - room.players.count))
-            let mid = fullPlayers.count / 2
-            let left = Array(fullPlayers.prefix(mid))
-            let right = Array(fullPlayers.suffix(from: mid))
+            let fullPlayers = getFullPlayers()
 
             HStack(alignment: .top, spacing: 20) {
                 VStack(spacing: 16) {
-                    ForEach(left.indices, id: \.self) { index in
-                        playerCard(name: left[index], isReady: playerStates[left[index]] == "Ready")
+                    ForEach(Array(fullPlayers.prefix(fullPlayers.count / 2)).indices, id: \.self) { index in
+                        let player = fullPlayers[index]
+                        playerCard(
+                            name: player,
+                            isReady: !player.isEmpty && playerStates[player] == "Ready"
+                        )
                     }
                 }
 
                 VStack(spacing: 16) {
-                    ForEach(right.indices, id: \.self) { index in
-                        playerCard(name: right[index], isReady: playerStates[right[index]] == "Ready")
+                    ForEach(Array(fullPlayers.suffix(fullPlayers.count - fullPlayers.count / 2)).indices, id: \.self) { index in
+                        let player = fullPlayers[fullPlayers.count / 2 + index]
+                        playerCard(
+                            name: player,
+                            isReady: !player.isEmpty && playerStates[player] == "Ready"
+                        )
                     }
                 }
             }
@@ -65,7 +70,7 @@ struct GameLobbyView: View {
 
             Spacer()
 
-            // ✅ 버튼 영역 (방장/유저 분기)
+            // ✅ 버튼 영역 (방장/유저 구분)
             if authViewModel.userName == room.hostName {
                 // 🔥 방장 → Start 버튼
                 Button(action: {
@@ -106,14 +111,30 @@ struct GameLobbyView: View {
         }
     }
 
-    // ✅ 유저 상태 초기화 (처음엔 모두 Normal)
+    // ✅ 전체 유저 리스트 생성 (본인 이름 보장)
+    private func getFullPlayers() -> [String] {
+        var playersSet = Set(room.players)
+        playersSet.insert(room.hostName) // 방장 이름도 확실히 추가
+        let players = Array(playersSet)
+        let maxCount = room.maxPlayers
+        return players + Array(repeating: "", count: max(0, maxCount - players.count))
+    }
+
+    // ✅ 유저 상태 초기화 (방장만 Ready, 나머지는 Normal)
     private func initializePlayerStates() {
-        for player in room.players {
-            playerStates[player] = "Normal"
+        var playersSet = Set(room.players)
+        playersSet.insert(room.hostName) // 방장 이름 강제 추가
+
+        for player in playersSet {
+            if player == room.hostName {
+                playerStates[player] = "Ready" // 방장은 무조건 Ready
+            } else {
+                playerStates[player] = "Normal" // 나머지는 Normal
+            }
         }
     }
 
-    // ✅ Start 버튼 눌렀을 때 Ready인 유저들만 Watch로 전송
+    // ✅ Start 버튼 눌렀을 때 Ready 유저들만 Watch로 전송
     private func sendReadyPlayersToWatch() {
         for (player, state) in playerStates {
             if state == "Ready" {
@@ -125,14 +146,6 @@ struct GameLobbyView: View {
                 PhoneWatchConnector.shared.send(message: message)
             }
         }
-        // 방장 본인도 보내기
-        let hostName = authViewModel.userName ?? "방장"
-        let hostMessage: [String: Any] = [
-            "event": "playerReady",
-            "userName": hostName,
-            "status": "Ready"
-        ]
-        PhoneWatchConnector.shared.send(message: hostMessage)
     }
 
     // ✅ 사용자 카드 뷰

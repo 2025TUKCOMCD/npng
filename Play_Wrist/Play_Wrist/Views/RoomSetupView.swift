@@ -56,10 +56,10 @@ struct RoomSetupView: View {
                                     maxPlayers: Int(playerCount) ?? 4,
                                     hostName: host
                                 )
-
-                                // ✅ Watch로 방 입장 완료 메시지 전송
-
-                                shouldNavigate = true
+                                // ✅ 방 생성 직후 바로 이동하면 room 세팅 전에 이동하는 문제 발생
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    shouldNavigate = true
+                                }
                             }) {
                                 ZStack {
                                     Circle()
@@ -78,8 +78,10 @@ struct RoomSetupView: View {
 
                         // NavigationLink로 대기방 이동
                         NavigationLink(
-                            destination: GameLobbyView(room: roomViewModel.room ?? Room(
-                                title: "에러", game: selectedGame, password: "", maxPlayers: 4, hostName: "???", players: [])
+                            destination: GameLobbyView(
+                                room: roomViewModel.room ?? Room(
+                                    title: "에러", game: selectedGame, password: "", maxPlayers: 4, hostName: "???", players: []
+                                )
                             ).environmentObject(authViewModel),
                             isActive: $shouldNavigate
                         ) {
