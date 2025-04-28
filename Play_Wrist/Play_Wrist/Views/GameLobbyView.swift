@@ -5,6 +5,8 @@ struct GameLobbyView: View {
     @EnvironmentObject var authViewModel: AppleSignInViewModel
     @Environment(\.dismiss) private var dismiss
 
+    @State private var playerStates: [String: String] = [:] // 🔥 유저 상태 저장 (Normal / Ready)
+
     var body: some View {
         VStack(spacing: 16) {
             // ✅ 상단 바
@@ -49,13 +51,13 @@ struct GameLobbyView: View {
             HStack(alignment: .top, spacing: 20) {
                 VStack(spacing: 16) {
                     ForEach(left.indices, id: \.self) { index in
-                        playerCard(name: left[index], isReady: true)
+                        playerCard(name: left[index], isReady: playerStates[left[index]] == "Ready")
                     }
                 }
 
                 VStack(spacing: 16) {
                     ForEach(right.indices, id: \.self) { index in
-                        playerCard(name: right[index], isReady: true)
+                        playerCard(name: right[index], isReady: playerStates[right[index]] == "Ready")
                     }
                 }
             }
@@ -63,19 +65,11 @@ struct GameLobbyView: View {
 
             Spacer()
 
-            // ✅ 버튼 영역 (방장/유저 구분)
+            // ✅ 버튼 영역 (방장/유저 분기)
             if authViewModel.userName == room.hostName {
-                // 방장 → Start 버튼
+                // 🔥 방장 → Start 버튼
                 Button(action: {
-                    let userName = authViewModel.userName ?? "이름 없음"
-
-                    let message: [String: Any] = [
-                        "event": "playerReady",
-                        "userName": userName,
-                        "status": "Ready"
-                    ]
-
-                    PhoneWatchConnector.shared.send(message: message)
+                    sendReadyPlayersToWatch()
                 }) {
                     Text("Start")
                         .fontWeight(.bold)
@@ -88,17 +82,10 @@ struct GameLobbyView: View {
                 .padding(.horizontal, 40)
                 .padding(.bottom, 30)
             } else {
-                // 일반 유저 → Ready 버튼
+                // 🔥 일반 유저 → Ready 버튼
                 Button(action: {
                     let userName = authViewModel.userName ?? "이름 없음"
-
-                    let message: [String: Any] = [
-                        "event": "playerReady",
-                        "userName": userName,
-                        "status": "Ready"
-                    ]
-
-                    PhoneWatchConnector.shared.send(message: message)
+                    playerStates[userName] = "Ready"
                 }) {
                     Text("Ready")
                         .fontWeight(.bold)
@@ -114,9 +101,41 @@ struct GameLobbyView: View {
         }
         .background(Color.white.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            initializePlayerStates()
+        }
     }
 
-    // ✅ 사용자 카드 뷰 함수
+    // ✅ 유저 상태 초기화 (처음엔 모두 Normal)
+    private func initializePlayerStates() {
+        for player in room.players {
+            playerStates[player] = "Normal"
+        }
+    }
+
+    // ✅ Start 버튼 눌렀을 때 Ready인 유저들만 Watch로 전송
+    private func sendReadyPlayersToWatch() {
+        for (player, state) in playerStates {
+            if state == "Ready" {
+                let message: [String: Any] = [
+                    "event": "playerReady",
+                    "userName": player,
+                    "status": "Ready"
+                ]
+                PhoneWatchConnector.shared.send(message: message)
+            }
+        }
+        // 방장 본인도 보내기
+        let hostName = authViewModel.userName ?? "방장"
+        let hostMessage: [String: Any] = [
+            "event": "playerReady",
+            "userName": hostName,
+            "status": "Ready"
+        ]
+        PhoneWatchConnector.shared.send(message: hostMessage)
+    }
+
+    // ✅ 사용자 카드 뷰
     func playerCard(name: String, isReady: Bool) -> some View {
         VStack(spacing: 6) {
             Image(systemName: "person.circle.fill")
@@ -128,12 +147,10 @@ struct GameLobbyView: View {
                 .font(.body)
                 .foregroundColor(.black)
 
-            if isReady {
-                Text("Ready")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundColor(.orange)
-            }
+            Text(isReady ? "Ready" : "Normal")
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundColor(isReady ? .orange : .gray)
         }
         .frame(width: 80, height: 90)
         .padding()
