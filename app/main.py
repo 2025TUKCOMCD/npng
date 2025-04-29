@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from app.routers import auth, user
+from app.routers import ws
 from app.database.database import engine
 from app.models.user import User
+from app.routers import room
 from dotenv import load_dotenv
 from app.middleware.auth_middleware import FirebaseAuthMiddleware
 
@@ -17,6 +19,9 @@ app.add_middleware(FirebaseAuthMiddleware)
 
 app.include_router(auth.router)
 app.include_router(user.router)
+app.include_router(room.router)
+
+app.include_router(ws.router)
 
 @app.get("/health")
 def health_check():
