@@ -8,7 +8,7 @@ struct FastTapMissionView: View {
     var onSuccess: () -> Void
 
     let maxTime: TimeInterval = 5.0
-    let requiredTaps: Int = 20
+    let requiredTaps: Int = 100
 
     var body: some View {
         VStack(spacing: 14) {
