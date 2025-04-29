@@ -39,7 +39,10 @@ class PhoneWatchConnector: NSObject, WCSessionDelegate {
             print("⚠️ Watch 연결 안 됨")
         }
     }
-
+    func sendToSpecificWatch(for player: String, message: [String: Any]) {
+            // 현재는 내 Watch 1개만 있으므로 일반 전송과 동일
+            send(message: message)
+        }
     // 필요 없지만 구현은 해줘야 함
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) {}

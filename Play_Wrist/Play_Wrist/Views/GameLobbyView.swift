@@ -185,7 +185,7 @@ struct GameLobbyView: View {
                 "hasBomb": hasBomb
             ]
 
-            PhoneWatchConnector.shared.send(message: message)
+            PhoneWatchConnector.shared.sendToSpecificWatch(for: player, message: message) // 🔥 수정 필요
         }
     }
 
