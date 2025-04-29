@@ -1,9 +1,14 @@
 import SwiftUI
 import WatchConnectivity
 
+enum MissionType: CaseIterable {
+    case fastTap, timingTap, shake
+}
+
 struct BombPartyWatchView: View {
     @StateObject private var sessionManager = WCSessionManager.shared
-    @State private var missionCompleted: Bool = false   // 🔥 미션 완료 여부 추가
+    @State private var missionCompleted: Bool = false
+    @State private var currentMission: MissionType? = nil
 
     var body: some View {
         VStack(spacing: 12) {
@@ -37,39 +42,44 @@ struct BombPartyWatchView: View {
                     .foregroundColor(sessionManager.hasBomb ? .red : .green)
             }
 
-            // 미션 수행 버튼
+            // 🚀 폭탄 있음 + 미션 안함 상태
             if sessionManager.hasBomb && !missionCompleted {
-                Button(action: {
-                    completeMission()
-                }) {
-                    Text("미션 수행")
-                        .font(.headline)
-                        .frame(maxWidth: 120)
-                        .padding(.vertical, 8)
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
+                if let mission = currentMission {
+                    switch mission {
+                    case .fastTap:
+                        FastTapMissionView(onSuccess: completeMission)
+                    case .timingTap:
+                        TimingTapMissionView(onSuccess: completeMission)
+                    case .shake:
+                        ShakeMissionView(onSuccess: completeMission)
+                    }
+                } else {
+                    Button("미션 수행") {
+                        currentMission = MissionType.allCases.randomElement()
+                    }
+                    .frame(maxWidth: 120)
+                    .padding(.vertical, 8)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .padding(.top, 12)
                 }
-                .padding(.top, 12)
             }
 
-            // 폭탄 넘기기 버튼
+            // ✅ 미션 완료 후 → 폭탄 넘기기
             if sessionManager.hasBomb && missionCompleted {
-                Button(action: {
+                Button("폭탄 넘기기") {
                     sendPassBomb()
-                }) {
-                    Text("폭탄 넘기기")
-                        .font(.headline)
-                        .frame(maxWidth: 120)
-                        .padding(.vertical, 8)
-                        .background(Color.orange)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
                 }
+                .frame(maxWidth: 120)
+                .padding(.vertical, 8)
+                .background(Color.orange)
+                .foregroundColor(.white)
+                .cornerRadius(10)
                 .padding(.top, 12)
             }
 
-            // 폭탄 없음 안내
+            // 🔕 폭탄 없음
             if !sessionManager.hasBomb {
                 Text("폭탄 없음")
                     .foregroundColor(.gray)
@@ -83,12 +93,12 @@ struct BombPartyWatchView: View {
         .multilineTextAlignment(.center)
     }
 
-    // ✅ 미션 수행 완료 처리
+    // 🎯 미션 성공 처리
     private func completeMission() {
         missionCompleted = true
     }
 
-    // ✅ 폭탄 넘기기
+    // 💣 폭탄 넘기기 메시지 전송
     private func sendPassBomb() {
         let message: [String: Any] = [
             "event": "passBomb",
@@ -98,7 +108,9 @@ struct BombPartyWatchView: View {
             WCSession.default.sendMessage(message, replyHandler: nil, errorHandler: nil)
         }
 
+        // 상태 초기화
         sessionManager.hasBomb = false
-        missionCompleted = false   // 🔥 다음 폭탄을 받을 때 다시 미션해야 하니까 초기화
+        missionCompleted = false
+        currentMission = nil
     }
 }
