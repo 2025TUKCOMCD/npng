@@ -2,11 +2,6 @@ from pydantic import BaseModel, Field
 from typing import Optional, List
 from datetime import datetime
 
-class RoomCreateRequest(BaseModel):
-    title: str = Field(..., example="재밌는 방")
-    game: str = Field(..., example="Bomb Game")
-    password: Optional[str] = Field(None, example="1234")
-    max_players: int = Field(..., example=4)
 
 class RoomResponse(BaseModel):
     id: int
@@ -32,8 +27,26 @@ class PlayerInfo(BaseModel):
 class RoomDetailResponse(RoomResponse):
     players: List[PlayerInfo]
 
-class JoinRoomRequest(BaseModel):
-    password: Optional[str] = Field(None, example="1234")
 
-class ReadyRequest(BaseModel):
-    is_ready: bool = Field(..., example=True)
+    # 방 생성 요청 스키마 추가
+class RoomCreateRequest(BaseModel):
+    room_id: int
+    action: str
+    title: str
+    game: str  # "bomb_party" or "mafia_game"
+    password: Optional[str] = None
+    maxPlayers: int
+    hostName: str  # 프론트에서 전달받지만 실제 사용은 안함
+
+# 방 참여 요청 스키마 추가
+class RoomJoinRequest(BaseModel):
+    action: str
+    userName: str  # 실제 사용은 Firebase UID 기반
+    inputPassword: Optional[str] = None
+
+# 준비 상태 스키마 추가
+class PlayerReadyRequest(BaseModel):
+    event: str
+    roomID: int
+    userName: str  # 실제 사용은 Firebase UID 기반
+    status: str  # "Ready" or "Normal"

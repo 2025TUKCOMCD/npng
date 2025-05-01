@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from app.models.room import Room
-from app.models.room_player import RoomPlayer
+from app.models.player_room import RoomPlayer
 from app.models.user import User
 from app.schemas.room import RoomCreateRequest
 from fastapi import HTTPException
