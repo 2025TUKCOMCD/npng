@@ -1,5 +1,6 @@
+from app.database.database import Base  # ✅ 명시적 임포트
 from sqlalchemy import Column, Integer, String, Boolean
-from app.database.database import Base
+from sqlalchemy.orm import relationship
 
 class User(Base):
     __tablename__ = "users"
@@ -10,3 +11,5 @@ class User(Base):
     full_name = Column(String(255))
     is_active = Column(Boolean, default=True)
     firebase_uid = Column(String(255), unique=True)  # Firebase 연동용
+
+    rooms = relationship("PlayerRoomAssociation", back_populates="user")
