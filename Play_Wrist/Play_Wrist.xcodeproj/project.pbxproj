@@ -642,6 +642,8 @@
 				DEVELOPMENT_TEAM = 82UQ5L8MSR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-Info.plist";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "네트워크 사용";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -672,6 +674,8 @@
 				DEVELOPMENT_TEAM = 82UQ5L8MSR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-Info.plist";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "네트워크 사용";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -773,7 +777,9 @@
 				DEVELOPMENT_TEAM = 82UQ5L8MSR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-W-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Play_Wrist_W;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "이 앱은 로컬 서버와 통신하기 위해 네트워크 접근 권한이 필요합니다\n로컬 네트워크 사용";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.hyeonsukim.Play-Wrist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -802,7 +808,9 @@
 				DEVELOPMENT_TEAM = 82UQ5L8MSR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-W-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Play_Wrist_W;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "이 앱은 로컬 서버와 통신하기 위해 네트워크 접근 권한이 필요합니다\n로컬 네트워크 사용";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.hyeonsukim.Play-Wrist";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -837,7 +845,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play_Wrist_W Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Play_Wrist_W Watch App";
-				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+				WATCHOS_DEPLOYMENT_TARGET = 11;
 			};
 			name = Debug;
 		};
@@ -857,7 +865,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play_Wrist_W Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Play_Wrist_W Watch App";
-				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+				WATCHOS_DEPLOYMENT_TARGET = 11;
 			};
 			name = Release;
 		};
@@ -876,7 +884,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_TARGET_NAME = "Play_Wrist_W Watch App";
-				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+				WATCHOS_DEPLOYMENT_TARGET = 11;
 			};
 			name = Debug;
 		};
@@ -895,7 +903,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				TEST_TARGET_NAME = "Play_Wrist_W Watch App";
-				WATCHOS_DEPLOYMENT_TARGET = 11.4;
+				WATCHOS_DEPLOYMENT_TARGET = 11;
 			};
 			name = Release;
 		};

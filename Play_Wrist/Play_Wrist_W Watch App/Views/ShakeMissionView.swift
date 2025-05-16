@@ -9,30 +9,40 @@ struct ShakeMissionView: View {
     private let motionManager = CMMotionManager()
     private let threshold = 1.2
     private let duration: TimeInterval = 3.0
+    private let requiredShakes = 10
+
 
     var body: some View {
-        VStack(spacing: 12) {
-            Text("🤚 손목을 흔들어라!")
-                .font(.headline)
+        VStack(spacing: 6) {
+            Text("🤚 손목을 3초 안에 \(requiredShakes)번 이상 흔드세요")
+                .font(.system(size: 14, weight: .semibold))
+                .multilineTextAlignment(.center)
+                .foregroundColor(.purple)
 
             Text("흔든 횟수: \(shakeCount)")
-                .font(.title2)
-                .bold()
+                .font(.system(size: 14, weight: .bold))
 
-            Text(resultText)
-                .foregroundColor(.purple)
-                .font(.footnote)
+            if !resultText.isEmpty {
+                Text(resultText)
+                    .font(.system(size: 12))
+                    .foregroundColor(.gray)
+            }
+
+            Spacer(minLength: 16)
 
             Button("시작") {
                 startShakeDetection()
             }
-            .frame(maxWidth: 100)
-            .padding()
+            .frame(width: 80, height: 30)
             .background(Color.green)
             .foregroundColor(.white)
-            .cornerRadius(10)
+            .cornerRadius(8)
+
+            Spacer(minLength: 6)
         }
-        .padding()
+        .padding(.horizontal, 8)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color.white)
     }
 
     private func startShakeDetection() {
@@ -41,7 +51,7 @@ struct ShakeMissionView: View {
 
         if motionManager.isAccelerometerAvailable {
             motionManager.accelerometerUpdateInterval = 0.1
-            motionManager.startAccelerometerUpdates(to: .main) { data, error in
+            motionManager.startAccelerometerUpdates(to: .main) { data, _ in
                 if let accel = data?.acceleration {
                     let magnitude = sqrt(accel.x * accel.x + accel.y * accel.y + accel.z * accel.z)
                     if magnitude > threshold {
@@ -52,7 +62,7 @@ struct ShakeMissionView: View {
 
             DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
                 motionManager.stopAccelerometerUpdates()
-                if shakeCount >= 5 {
+                if shakeCount >= requiredShakes {
                     resultText = "🎉 성공! \(shakeCount)회"
                     onSuccess()
                 } else {

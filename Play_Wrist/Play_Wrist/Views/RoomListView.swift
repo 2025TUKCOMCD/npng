@@ -40,6 +40,7 @@ struct RoomListView: View {
         .onAppear {
             if roomViewModel.rooms.isEmpty {
                 let testRoom = Room(
+                    id: Int.random(in: 1000...9999),
                     title: "🛠 테스트용 예비방",
                     game: "폭탄 넘기기",
                     password: "test",

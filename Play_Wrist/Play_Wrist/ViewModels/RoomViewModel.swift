@@ -1,3 +1,4 @@
+
 import Foundation
 
 class RoomViewModel: ObservableObject {
@@ -5,7 +6,14 @@ class RoomViewModel: ObservableObject {
     @Published var room: Room?
 
     func createRoom(title: String, game: String, password: String, maxPlayers: Int, hostName: String) {
-        let newRoom = Room(title: title, game: game, password: password, maxPlayers: maxPlayers, hostName: hostName, players: [hostName])
+        let newRoom = Room(
+            id: Int.random(in: 1000...9999),            title: title,
+            game: game,
+            password: password,
+            maxPlayers: maxPlayers,
+            hostName: hostName,
+            players: [hostName]
+        )
         rooms.append(newRoom)
         room = newRoom
     }
