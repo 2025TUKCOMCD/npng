@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     firebase_project_id: str
     firebase_credentials_path: str
 
+    google_application_credentials: str
+    class Config:
+        env_file = ".env"
+
 class Config:
     env_file = ".env"
     case_sensitive = False
