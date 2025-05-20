@@ -1,8 +1,10 @@
 import SwiftUI
 import WatchConnectivity
 
-enum MissionType: CaseIterable {
+enum MissionType: CaseIterable, Identifiable {
     case fastTap, timingTap, shake, hapticReaction, accuracyTap
+
+    var id: Self { self }
 
     var label: String {
         switch self {
@@ -22,13 +24,13 @@ struct BombPartyWatchView: View {
 
     var body: some View {
         VStack(spacing: 12) {
-            // 타이틀
+            // 💣 타이틀
             Text("💣 Bomb Party")
                 .font(.headline)
                 .fontWeight(.bold)
                 .foregroundColor(.purple)
 
-            // 플레이어 번호
+            // 👤 플레이어 번호
             VStack(spacing: 4) {
                 Text("내 번호")
                     .font(.footnote)
@@ -40,7 +42,7 @@ struct BombPartyWatchView: View {
                     .foregroundColor(.black)
             }
 
-            // 폭탄 상태
+            // 🧨 폭탄 상태
             VStack(spacing: 4) {
                 Text("폭탄 상태")
                     .font(.footnote)
@@ -52,42 +54,31 @@ struct BombPartyWatchView: View {
                     .foregroundColor(sessionManager.hasBomb ? .red : .green)
             }
 
-            // 🚀 미션 수행
+            // 🚀 미션 수행 or 넘기기
             if sessionManager.hasBomb && !missionCompleted {
-                if let mission = currentMission {
-                    switch mission {
-                    case .fastTap:
-                        FastTapMissionView(onSuccess: completeMission)
-                    case .timingTap:
-                        TimingTapMissionView(onSuccess: completeMission)
-                    case .shake:
-                        ShakeMissionView(onSuccess: completeMission)
-                    case .hapticReaction:
-                        HapticReactionGameView(onSuccess: completeMission)
-                    case .accuracyTap:
-                        TouchAccuracyGameView(onSuccess: completeMission)
-                    }
-                } else {
+                // 🔽 미션 선택 버튼 목록
+                ScrollView {
                     VStack(spacing: 6) {
                         Text("미션을 선택하세요")
                             .font(.subheadline)
                             .foregroundColor(.gray)
 
-                        ForEach(MissionType.allCases, id: \.self) { mission in
+                        ForEach(MissionType.allCases) { mission in
                             Button(mission.label) {
                                 currentMission = mission
                             }
-                            .frame(maxWidth: 120)
+                            .frame(maxWidth: .infinity)
                             .padding(.vertical, 6)
                             .background(Color.blue)
                             .foregroundColor(.white)
                             .cornerRadius(8)
                         }
                     }
+                    .padding(.top, 8)
                 }
+                .frame(maxHeight: 120)
             }
 
-            // ✅ 미션 완료 후 → 폭탄 넘기기
             if sessionManager.hasBomb && missionCompleted {
                 Button("폭탄 넘기기") {
                     sendPassBomb()
@@ -100,7 +91,6 @@ struct BombPartyWatchView: View {
                 .padding(.top, 12)
             }
 
-            // 🔕 폭탄 없음
             if !sessionManager.hasBomb {
                 Text("폭탄 없음")
                     .foregroundColor(.gray)
@@ -112,11 +102,28 @@ struct BombPartyWatchView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.white)
         .multilineTextAlignment(.center)
+
+        // ✅ 미션 전체 화면으로 분리
+        .fullScreenCover(item: $currentMission) { mission in
+            switch mission {
+            case .fastTap:
+                FastTapMissionView(onSuccess: completeMission)
+            case .timingTap:
+                TimingTapMissionView(onSuccess: completeMission)
+            case .shake:
+                ShakeMissionView(onSuccess: completeMission)
+            case .hapticReaction:
+                HapticReactionGameView(onSuccess: completeMission)
+            case .accuracyTap:
+                TouchAccuracyGameView(onSuccess: completeMission)
+            }
+        }
     }
 
     // 🎯 미션 성공 처리
     private func completeMission() {
         missionCompleted = true
+        currentMission = nil
     }
 
     // 💣 폭탄 넘기기 메시지 전송

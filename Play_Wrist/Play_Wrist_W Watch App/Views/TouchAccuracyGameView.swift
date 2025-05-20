@@ -1,34 +1,37 @@
 import SwiftUI
-import WatchKit
 
 struct TouchAccuracyGameView: View {
     var onSuccess: () -> Void
+
     @State private var targetPosition: CGPoint = .zero
-    @State private var userTapPosition: CGPoint? = nil
-    @State private var resultText: String = "시작을 누르세요"
+    @State private var resultText = "시작을 누르세요"
     @State private var gameStarted = false
     @State private var isSuccess = false
+    @State private var hitCount = 0
+    @State private var timerExpired = false
+    @State private var containerSize: CGSize = .zero
 
-    // 목표 터치 반경 허용 범위 (픽셀)
-    let targetRadius: CGFloat = 30
-    let tolerance: CGFloat = 25
+    let targetRadius: CGFloat = 20
+    let tolerance: CGFloat = 20
+    let requiredHits = 7
+    let timeLimit: TimeInterval = 5.0
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                // 배경 터치 인식
                 Color.white
+                    .onAppear {
+                        containerSize = geometry.size
+                    }
                     .gesture(
                         DragGesture(minimumDistance: 0)
                             .onEnded { value in
                                 if gameStarted {
-                                    userTapPosition = value.location
-                                    evaluateTouch()
+                                    evaluateTouch(at: value.location)
                                 }
                             }
                     )
 
-                // 타겟 원
                 if gameStarted {
                     Circle()
                         .fill(Color.red)
@@ -36,50 +39,79 @@ struct TouchAccuracyGameView: View {
                         .position(targetPosition)
                 }
 
-                // 결과 표시
-                VStack {
-                    Spacer()
+                VStack(spacing: 8) {
                     Text(resultText)
-                        .font(.headline)
-                        .multilineTextAlignment(.center)
+                        .font(.footnote)
                         .foregroundColor(isSuccess ? .green : .black)
-                    Button("시작") {
-                        startGame(in: geometry.size)
+
+                    if !gameStarted {
+                        Button("시작") {
+                            containerSize = geometry.size // 다시 측정 보장
+                            startGame()
+                        }
+                        .buttonStyle(.borderedProminent)
                     }
-                    .buttonStyle(.borderedProminent)
                 }
-                .padding()
+                .padding(.top, 8)
+            }
+            .edgesIgnoringSafeArea(.all)
+        }
+    }
+
+    // MARK: - Start Game
+
+    func startGame() {
+        hitCount = 0
+        timerExpired = false
+        gameStarted = true
+        isSuccess = false
+        resultText = "표적 7번 터치하세요!"
+        showNewTarget()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeLimit) {
+            if !gameStarted { return }
+            timerExpired = true
+
+            if hitCount >= requiredHits {
+                resultText = "🎉 성공!"
+                isSuccess = true
+                gameStarted = false
+                onSuccess()
+            } else {
+                resultText = "⏱ 실패! \(hitCount)회 성공"
+                isSuccess = false
+                gameStarted = false
             }
         }
     }
 
-    func startGame(in size: CGSize) {
-        // 화면 내 랜덤 위치 설정 (상하단 여백 고려)
-        let padding: CGFloat = 40
-        let x = CGFloat.random(in: padding...(size.width - padding))
-        let y = CGFloat.random(in: padding...(size.height - padding))
+    func showNewTarget() {
+        let padding: CGFloat = targetRadius + 10
+        let x = CGFloat.random(in: padding...(containerSize.width - padding))
+        let y = CGFloat.random(in: padding...(containerSize.height - padding))
         targetPosition = CGPoint(x: x, y: y)
-        userTapPosition = nil
-        resultText = "표적을 눌러보세요!"
-        gameStarted = true
-        isSuccess = false
     }
 
-    func evaluateTouch() {
-        guard let userPos = userTapPosition else { return }
-
-        let dx = userPos.x - targetPosition.x
-        let dy = userPos.y - targetPosition.y
+    func evaluateTouch(at point: CGPoint) {
+        let dx = point.x - targetPosition.x
+        let dy = point.y - targetPosition.y
         let distance = sqrt(dx * dx + dy * dy)
 
         if distance <= tolerance {
-            resultText = "🎯 정확해요!"
-            isSuccess = true
+            hitCount += 1
+            if hitCount >= requiredHits {
+                resultText = "🎉 성공!"
+                isSuccess = true
+                gameStarted = false
+                onSuccess()
+            } else {
+                resultText = "✅ \(hitCount) / \(requiredHits)"
+                showNewTarget()
+            }
         } else {
-            resultText = "😵 빗맞았어요!\n거리: \(Int(distance))"
+            resultText = "❌ 빗맞았어요! 실패"
             isSuccess = false
+            gameStarted = false
         }
-
-        gameStarted = false
     }
 }
