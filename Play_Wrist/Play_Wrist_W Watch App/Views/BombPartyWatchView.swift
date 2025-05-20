@@ -2,7 +2,7 @@ import SwiftUI
 import WatchConnectivity
 
 enum MissionType: CaseIterable, Identifiable {
-    case fastTap, timingTap, shake, hapticReaction, accuracyTap
+    case fastTap, timingTap, shake, hapticReaction, accuracyTap, patternMemory
 
     var id: Self { self }
 
@@ -13,6 +13,7 @@ enum MissionType: CaseIterable, Identifiable {
         case .shake: return "흔들기"
         case .hapticReaction: return "진동 반응"
         case .accuracyTap: return "정밀 터치"
+        case .patternMemory: return "패턴 기억하기"
         }
     }
 }
@@ -116,6 +117,8 @@ struct BombPartyWatchView: View {
                 HapticReactionGameView(onSuccess: completeMission)
             case .accuracyTap:
                 TouchAccuracyGameView(onSuccess: completeMission)
+            case .patternMemory:
+                PatternMemoryGameView(onSuccess: completeMission)
             }
         }
     }
