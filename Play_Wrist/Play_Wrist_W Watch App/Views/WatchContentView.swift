@@ -1,15 +1,18 @@
 import SwiftUI
 
 struct WatchContentView: View {
-    @StateObject private var session = WCSessionManager.shared
+    @ObservedObject private var session = WCSessionManager.shared
 
     var body: some View {
         VStack {
-            if session.playerNumber != "대기 중..." {
-                // ✅ 플레이어 번호가 설정됐으면 게임 시작
+            switch session.currentGame {
+            case "BombParty":
                 BombPartyWatchView()
-            } else {
-                // ✅ 게임 시작 전 - 네가 만든 예쁜 대기 화면 그대로
+
+            case "SpyFall":
+                SpyFallStateView()
+
+            default:
                 VStack(spacing: 12) {
                     Image(systemName: "play.circle.fill")
                         .resizable()

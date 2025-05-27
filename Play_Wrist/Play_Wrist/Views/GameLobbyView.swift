@@ -5,16 +5,15 @@ struct GameLobbyView: View {
     @EnvironmentObject var authViewModel: AppleSignInViewModel
     @Environment(\.dismiss) private var dismiss
 
-    @State private var playerStates: [String: String] = [:] // 🔥 유저 상태 저장 (Normal / Ready)
-    @State private var shouldNavigateToBombParty = false    // 🔥 게임 화면으로 이동 플래그
+    @State private var playerStates: [String: String] = [:]
+    @State private var shouldNavigateToBombParty = false
+    @State private var shouldNavigateToSpyFall = false
 
     var body: some View {
         VStack(spacing: 16) {
-            // ✅ 상단 바
+            // 상단 바
             HStack {
-                Button(action: {
-                    dismiss()
-                }) {
+                Button(action: { dismiss() }) {
                     HStack(spacing: 4) {
                         Image(systemName: "chevron.left")
                         Text("게임 선택")
@@ -32,7 +31,7 @@ struct GameLobbyView: View {
             .padding()
             .background(Color.purple)
 
-            // ✅ 게임명 카드
+            // 게임명 카드
             Text(room.game)
                 .foregroundColor(.purple)
                 .font(.headline)
@@ -43,27 +42,19 @@ struct GameLobbyView: View {
                         .stroke(Color.purple, lineWidth: 1)
                 )
 
-            // ✅ 사용자 카드 리스트
+            // 사용자 카드 리스트
             let fullPlayers = getFullPlayers()
-
             HStack(alignment: .top, spacing: 20) {
                 VStack(spacing: 16) {
                     ForEach(Array(fullPlayers.prefix(fullPlayers.count / 2)).indices, id: \.self) { index in
                         let player = fullPlayers[index]
-                        playerCard(
-                            name: player,
-                            isReady: !player.isEmpty && playerStates[player] == "Ready"
-                        )
+                        playerCard(name: player, isReady: isPlayerReady(player))
                     }
                 }
-
                 VStack(spacing: 16) {
                     ForEach(Array(fullPlayers.suffix(fullPlayers.count - fullPlayers.count / 2)).indices, id: \.self) { index in
                         let player = fullPlayers[fullPlayers.count / 2 + index]
-                        playerCard(
-                            name: player,
-                            isReady: !player.isEmpty && playerStates[player] == "Ready"
-                        )
+                        playerCard(name: player, isReady: isPlayerReady(player))
                     }
                 }
             }
@@ -71,13 +62,17 @@ struct GameLobbyView: View {
 
             Spacer()
 
-            // ✅ 버튼 영역 (방장/유저 구분)
+            // 버튼 영역
             if authViewModel.userName == room.hostName {
-                // 🔥 방장 → Start 버튼
                 Button(action: {
-                    sendReadyPlayersToWatch()            // 🔥 Ready 상태 Watch 전송
-                    assignPlayersAndSendToWatch()        // 🔥 Player 번호/폭탄 상태 Watch 전송
-                    shouldNavigateToBombParty = true     // 🔥 게임 화면으로 이동
+                    if room.game == "Bomb Party" {
+                        sendReadyPlayersToWatch()
+                        assignPlayersAndSendToWatch()
+                        shouldNavigateToBombParty = true
+                    } else if room.game == "SPY Fall" {
+                        sendSpyFallDataToWatch()
+                        shouldNavigateToSpyFall = true
+                    }
                 }) {
                     Text("Start")
                         .fontWeight(.bold)
@@ -90,9 +85,8 @@ struct GameLobbyView: View {
                 .padding(.horizontal, 40)
                 .padding(.bottom, 30)
             } else {
-                // 🔥 일반 유저 → Ready <-> Normal 토글 버튼
                 let userName = authViewModel.userName ?? "이름 없음"
-                let isReady = playerStates[userName] == "Ready"
+                let isReady = isPlayerReady(userName)
 
                 Button(action: {
                     playerStates[userName] = isReady ? "Normal" : "Ready"
@@ -109,87 +103,82 @@ struct GameLobbyView: View {
                 .padding(.bottom, 30)
             }
 
-            // ✅ BombPartyGamePlayView로 이동하는 NavigationLink 추가
-            NavigationLink(
-                destination: BombPartyGamePlayView(room: room).environmentObject(authViewModel),
-                isActive: $shouldNavigateToBombParty
-            ) {
-                EmptyView()
-            }
+            // Navigation Links
+            NavigationLink(destination: BombPartyGamePlayView(room: room).environmentObject(authViewModel), isActive: $shouldNavigateToBombParty) { EmptyView() }
+
+            NavigationLink(destination: SpyFallGamePlayView(room: room).environmentObject(authViewModel), isActive: $shouldNavigateToSpyFall) { EmptyView() }
         }
         .background(Color.white.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
-        .onAppear {
-            initializePlayerStates()
-        }
+        .onAppear { initializePlayerStates() }
     }
 
-    // ✅ 유저 리스트 생성
+    private func isPlayerReady(_ name: String) -> Bool {
+        return !name.isEmpty && playerStates[name] == "Ready"
+    }
+
     private func getFullPlayers() -> [String] {
         var playersSet = Set(room.players)
         playersSet.insert(room.hostName)
         let players = Array(playersSet)
-        let maxCount = room.maxPlayers
-        return players + Array(repeating: "", count: max(0, maxCount - players.count))
+        return players + Array(repeating: "", count: max(0, room.maxPlayers - players.count))
     }
 
-    // ✅ 유저 상태 초기화
     private func initializePlayerStates() {
         var playersSet = Set(room.players)
         playersSet.insert(room.hostName)
-
         for player in playersSet {
-            if player == room.hostName {
-                playerStates[player] = "Ready"
-            } else {
-                playerStates[player] = "Normal"
-            }
+            playerStates[player] = (player == room.hostName) ? "Ready" : "Normal"
         }
     }
 
-    // ✅ Ready 유저 Watch로 전송
     private func sendReadyPlayersToWatch() {
-        for (player, state) in playerStates {
-            if state == "Ready" {
-                let message: [String: Any] = [
-                    "event": "playerReady",
-                    "userName": player,
-                    "status": "Ready"
-                ]
-                PhoneWatchConnector.shared.send(message: message)
-            }
+        for (player, state) in playerStates where state == "Ready" {
+            let message: [String: Any] = ["event": "playerReady", "userName": player, "status": "Ready"]
+            PhoneWatchConnector.shared.send(message: message)
         }
     }
 
-    // 🔥 추가: Player 번호/폭탄 상태 Watch로 전송
     private func assignPlayersAndSendToWatch() {
-        var players = room.players
-        players.append(room.hostName)
-        players = Array(Set(players)) // 중복 제거
-
-        if players.count > room.maxPlayers {
-            players = Array(players.prefix(room.maxPlayers))
-        }
-
-        players.shuffle()
-
+        var players = Array(Set(room.players + [room.hostName])).shuffled()
         let bombHolder = players.randomElement()
 
-        for (index, player) in players.enumerated() {
-            let playerNumber = "Player\(index + 1)"
-            let hasBomb = (player == bombHolder)
-
+        for (i, player) in players.prefix(room.maxPlayers).enumerated() {
             let message: [String: Any] = [
                 "event": "assignPlayer",
-                "playerNumber": playerNumber,
-                "hasBomb": hasBomb
+                "playerNumber": "Player\(i+1)",
+                "hasBomb": (player == bombHolder)
             ]
-
-            PhoneWatchConnector.shared.sendToSpecificWatch(for: player, message: message) // 🔥 수정 필요
+            PhoneWatchConnector.shared.sendToSpecificWatch(for: player, message: message)
         }
+
+        // ✅ 🔥 Bomb Party 화면 전환용 메시지 추가
+        PhoneWatchConnector.shared.send(message: [
+            "event": "startGame",
+            "gameType": "BombParty"
+        ])
     }
 
-    // ✅ 사용자 카드 뷰
+    private func sendSpyFallDataToWatch() {
+        let spy = (room.players + [room.hostName]).randomElement() ?? ""
+
+        for player in room.players + [room.hostName] {
+            let message: [String: Any] = [
+                "event": "spyAssign",
+                "userName": player,
+                "role": (player == spy) ? "SPY" : "CITIZEN",
+                "location": "병원" // ✅ 예시 장소 (필요 시 변경 가능)
+            ]
+            PhoneWatchConnector.shared.sendToSpecificWatch(for: player, message: message)
+        }
+
+        // ✅ Watch에서 SpyFallStateView로 화면 전환을 유도
+        PhoneWatchConnector.shared.send(message: [
+            "event": "startGame",
+            "gameType": "SpyFall"
+        ])
+    }
+
     func playerCard(name: String, isReady: Bool) -> some View {
         VStack(spacing: 6) {
             Image(systemName: "person.circle.fill")
