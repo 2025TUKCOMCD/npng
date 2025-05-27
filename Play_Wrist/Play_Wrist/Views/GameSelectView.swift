@@ -51,7 +51,7 @@ struct GameSelectView: View {
 
                 // 🔸 Mafia Game 카드
                 Button(action: {
-                    selectedGame = "Mafia Game"
+                    selectedGame = "SPY Fall"
                     navigateToRoomSetup = true
                 }) {
                     HStack(spacing: 15) {
@@ -68,11 +68,11 @@ struct GameSelectView: View {
                         }
 
                         VStack(alignment: .leading, spacing: 5) {
-                            Text("Mafia Game")
+                            Text("SPY Fall")
                                 .font(.headline)
                                 .foregroundColor(.purple)
 
-                            Text("마피아 게임을 현실에서!")
+                            Text("스파이를 찾아라!")
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
