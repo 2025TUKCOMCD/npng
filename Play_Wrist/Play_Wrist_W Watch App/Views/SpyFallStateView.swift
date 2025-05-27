@@ -19,10 +19,17 @@ struct SpyFallStateView: View {
                     .font(.footnote)
                     .foregroundColor(.gray)
 
-                Text(sessionManager.role)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(sessionManager.role == "SPY" ? .red : .green)
+                if sessionManager.role == "CITIZEN" {
+                    Text(sessionManager.citizenRole)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.green)
+                } else {
+                    Text("스파이")
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.red)
+                }
             }
 
             // 🏥 장소 정보 (시민만 표시)
@@ -53,7 +60,7 @@ struct SpyFallStateView: View {
         .padding()
         .background(Color.white)
         .onAppear {
-            print("🕵️‍♀️ SpyFallStateView 진입 - 역할: \(sessionManager.role), 장소: \(sessionManager.location)")
+            print("🕵️‍♀️ SpyFallStateView 진입 - 역할: \(sessionManager.role), 장소: \(sessionManager.location), 세부 역할: \(sessionManager.citizenRole)")
         }
     }
 }

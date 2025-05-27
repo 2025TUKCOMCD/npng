@@ -159,20 +159,40 @@ struct GameLobbyView: View {
         ])
     }
 
-    private func sendSpyFallDataToWatch() {
-        let spy = (room.players + [room.hostName]).randomElement() ?? ""
 
-        for player in room.players + [room.hostName] {
+    
+    private func sendSpyFallDataToWatch() {
+        let locations: [String: [String]] = [
+            "병원": ["의사", "간호사", "환자", "병문안 온 친구"],
+            "공항": ["조종사", "승무원", "여행객", "보안요원"],
+            "학교": ["학생", "선생님", "교장", "조리사"]
+        ]
+
+        let selectedLocation = locations.keys.randomElement() ?? "병원"
+        let roles = locations[selectedLocation] ?? ["시민"]
+
+        var players = room.players + [room.hostName]
+        players.shuffle()  // 🔄 플레이어 순서 섞기
+
+        guard let spy = players.randomElement() else { return }
+        var citizenRoles = roles.shuffled()
+
+        for player in players {
+            let isSpy = player == spy
+            let citizenRole = isSpy ? "" : (citizenRoles.popLast() ?? "시민")
+
             let message: [String: Any] = [
                 "event": "spyAssign",
                 "userName": player,
-                "role": (player == spy) ? "SPY" : "CITIZEN",
-                "location": "병원" // ✅ 예시 장소 (필요 시 변경 가능)
+                "role": isSpy ? "SPY" : "CITIZEN",
+                "location": selectedLocation,
+                "citizenRole": citizenRole
             ]
+
             PhoneWatchConnector.shared.sendToSpecificWatch(for: player, message: message)
+            print("🔀 \(player): \(isSpy ? "SPY" : citizenRole), 장소: \(selectedLocation)")
         }
 
-        // ✅ Watch에서 SpyFallStateView로 화면 전환을 유도
         PhoneWatchConnector.shared.send(message: [
             "event": "startGame",
             "gameType": "SpyFall"

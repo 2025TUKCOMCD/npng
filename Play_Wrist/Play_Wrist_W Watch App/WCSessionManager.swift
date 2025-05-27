@@ -13,6 +13,7 @@ class WCSessionManager: NSObject, ObservableObject, WCSessionDelegate {
     // 🔥 SpyFall 관련
     @Published var role: String = "대기 중..."
     @Published var location: String = "?"
+    @Published var citizenRole: String = ""
 
     // 🔁 메시지 수신 콜백 등록용 (SpyFallWatchView 등에서 사용)
     var onMessageReceived: (([String: Any]) -> Void)?
@@ -53,7 +54,8 @@ class WCSessionManager: NSObject, ObservableObject, WCSessionDelegate {
                     // SpyFall: 역할 및 장소 전달
                     self.role = message["role"] as? String ?? "Unknown"
                     self.location = message["location"] as? String ?? "?"
-
+                    self.citizenRole = message["citizenRole"] as? String ?? ""
+                    
                 case "passBomb":
                     // Bomb Party: 폭탄 넘김 (옵션 처리)
                     self.hasBomb = false
