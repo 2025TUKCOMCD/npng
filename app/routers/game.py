@@ -137,3 +137,46 @@ def start_spyfall(room_id: int, db: Session = Depends(get_db), current_user: Use
     db.commit()
 
     return {"message": "SpyFall timer started (5분 고정)"}
+
+@router.post("/rooms/{room_id}/start")
+def start_game(
+    room_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    room = db.query(Room).filter(Room.id == room_id).first()
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
+    if room.host_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Only the host can start the game")
+    
+    if room.game_started:
+        raise HTTPException(status_code=400, detail="Game already started")
+    
+    # 참여 플레이어 모두 준비 상태인지 확인
+    players = db.query(PlayerRoomAssociation).filter(PlayerRoomAssociation.room_id == room_id).all()
+    if not players:
+        raise HTTPException(status_code=400, detail="No players in room")
+    
+    if any(not p.is_ready for p in players):
+        raise HTTPException(status_code=400, detail="Not all players are ready")
+    
+    # 게임 시작 상태 업데이트
+    room.game_started = True
+    db.commit()
+
+    # TODO: 플레이어별 초기 게임 세팅(예: 역할 배정, 폭탄 소지자 지정 등)
+    # 예시) player.role = "mafia" or "citizen" 등
+    
+    # 업데이트된 플레이어 리스트 반환 (예시)
+    player_list = [{
+        "user_id": p.user_id,
+        "is_ready": p.is_ready,
+        # "role": getattr(p, "role", None),  # 역할이 있다면
+    } for p in players]
+
+    return {
+        "message": "Game started",
+        "players": player_list,
+    }   

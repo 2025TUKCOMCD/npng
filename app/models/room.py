@@ -11,6 +11,7 @@ class Room(Base):
     game_type = Column(String(50))
     password = Column(String(100))
     max_players = Column(Integer)
+    game_started = Column(Boolean, default=False)  # 게임 시작 여부
     is_active = Column(Boolean, default=True)
     host_id = Column(Integer, ForeignKey("users.id"))
 

@@ -138,4 +138,3 @@ def list_rooms(
     rooms = db.query(Room).offset(skip).limit(limit).all()
     return rooms
 
-cd
