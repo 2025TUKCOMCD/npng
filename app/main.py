@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from app.middleware.auth_middleware import FirebaseAuthMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.database import Base
+import app
 Base.metadata.create_all(bind=engine)
 
 

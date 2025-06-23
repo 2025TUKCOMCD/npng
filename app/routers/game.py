@@ -144,39 +144,46 @@ def start_game(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
-    room = db.query(Room).filter(Room.id == room_id).first()
-    if not room:
-        raise HTTPException(status_code=404, detail="Room not found")
-    
-    if room.host_id != current_user.id:
-        raise HTTPException(status_code=403, detail="Only the host can start the game")
-    
-    if room.game_started:
-        raise HTTPException(status_code=400, detail="Game already started")
-    
-    # 참여 플레이어 모두 준비 상태인지 확인
-    players = db.query(PlayerRoomAssociation).filter(PlayerRoomAssociation.room_id == room_id).all()
-    if not players:
-        raise HTTPException(status_code=400, detail="No players in room")
-    
-    if any(not p.is_ready for p in players):
-        raise HTTPException(status_code=400, detail="Not all players are ready")
-    
-    # 게임 시작 상태 업데이트
-    room.game_started = True
-    db.commit()
+    try:
+        print(f"✅ [start_game] called - room_id: {room_id}")
+        print(f"🔐 current_user.id: {current_user.id}")
 
-    # TODO: 플레이어별 초기 게임 세팅(예: 역할 배정, 폭탄 소지자 지정 등)
-    # 예시) player.role = "mafia" or "citizen" 등
-    
-    # 업데이트된 플레이어 리스트 반환 (예시)
-    player_list = [{
-        "user_id": p.user_id,
-        "is_ready": p.is_ready,
-        # "role": getattr(p, "role", None),  # 역할이 있다면
-    } for p in players]
+        room = db.query(Room).filter(Room.id == room_id).first()
+        if not room:
+            raise HTTPException(status_code=404, detail="Room not found")
+        
+        print(f"🏠 room.host_id: {room.host_id}")
 
-    return {
-        "message": "Game started",
-        "players": player_list,
-    }   
+        if room.host_id != current_user.id:
+            raise HTTPException(status_code=403, detail="Only the host can start the game")
+
+        if room.game_started:
+            raise HTTPException(status_code=400, detail="Game already started")
+        
+        players = db.query(PlayerRoomAssociation).filter(PlayerRoomAssociation.room_id == room_id).all()
+        if not players:
+            raise HTTPException(status_code=400, detail="No players in room")
+
+        print("👥 Players in room:")
+        for p in players:
+            print(f"   - user_id: {p.user_id}, is_ready: {getattr(p, 'is_ready', '❌ 없음')}")
+
+        if any(not getattr(p, "is_ready", False) for p in players):
+            raise HTTPException(status_code=400, detail="Not all players are ready")
+        
+        room.game_started = True
+        db.commit()
+
+        player_list = [{
+            "user_id": p.user_id,
+            "is_ready": getattr(p, "is_ready", False)
+        } for p in players]
+
+        return {
+            "message": "Game started",
+            "players": player_list,
+        }
+
+    except Exception as e:
+        print(f"❌ [start_game] Exception: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
