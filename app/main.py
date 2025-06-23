@@ -9,7 +9,7 @@ from app.database.database import Base
 Base.metadata.create_all(bind=engine)
 
 
-load_dotenv()
+load_dotenv(dotenv_path=".env")
 
 app = FastAPI(title="Bomb Game API", version="1.0.0")
 
@@ -30,6 +30,7 @@ app.include_router(user.router)
 app.include_router(room.router, prefix="/api")  
 app.include_router(game.router, prefix="/api")  
 app.include_router(ws.router, prefix="/api")
+
 
 @app.get("/health")
 def health_check():

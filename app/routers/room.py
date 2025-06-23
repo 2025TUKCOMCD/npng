@@ -1,9 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException, Body
 from sqlalchemy.orm import Session
+from typing import List
 from app.database.database import get_db
 from app.schemas.room import RoomCreateRequest, RoomJoinRequest, PlayerReadyRequest
 from app.utils.auth import get_current_user
 from app.models import User, Room, PlayerRoomAssociation
+from app.database.database import get_db
+from app.schemas.room import RoomResponse
+from app.models.room import Room
 
 router = APIRouter(tags=["Rooms"])
 
@@ -124,3 +128,14 @@ def update_ready_status(
         "userName": current_user.full_name,
         "newStatus": request.status
     }
+
+@router.get("/rooms", response_model=List[RoomResponse])
+def list_rooms(
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    rooms = db.query(Room).offset(skip).limit(limit).all()
+    return rooms
+
+cd
