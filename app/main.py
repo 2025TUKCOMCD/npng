@@ -7,10 +7,19 @@ from app.middleware.auth_middleware import FirebaseAuthMiddleware
 from fastapi.middleware.cors import CORSMiddleware
 from app.database.database import Base
 import app
+from app.init import *
+import firebase_admin
+from firebase_admin import credentials
+import os
 Base.metadata.create_all(bind=engine)
 
 
 load_dotenv(dotenv_path=".env")
+
+if not firebase_admin._apps:
+    cred_path = os.getenv("firebase_credentials_path")
+    cred = credentials.Certificate(cred_path)
+    firebase_admin.initialize_app(cred)
 
 app = FastAPI(title="Bomb Game API", version="1.0.0")
 
