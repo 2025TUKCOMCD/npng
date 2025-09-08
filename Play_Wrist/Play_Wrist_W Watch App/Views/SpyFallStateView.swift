@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SpyFallStateView: View {
     @ObservedObject private var sessionManager = WCSessionManager.shared
+    @State private var showLocationGuessingView = false
 
     var body: some View {
         VStack(spacing: 12) {
@@ -46,13 +47,26 @@ struct SpyFallStateView: View {
                 }
             }
 
-            // 👀 스파이 안내문
+            // 👀 스파이 안내문 및 버튼
             if sessionManager.role == "SPY" {
-                Text("대화를 듣고 장소를 유추하세요.")
-                    .font(.footnote)
-                    .foregroundColor(.gray)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 10)
+                VStack(spacing: 8) {
+                    Text("대화를 듣고 장소를 유추하세요.")
+                        .font(.footnote)
+                        .foregroundColor(.gray)
+                        .multilineTextAlignment(.center)
+
+                    Button(action: {
+                        showLocationGuessingView = true
+                    }) {
+                        Text("장소를 유추해보기")
+                            .font(.footnote)
+                            .padding(8)
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red.opacity(0.8))
+                            .foregroundColor(.white)
+                            .cornerRadius(10)
+                    }
+                }
             }
 
             Spacer()
@@ -61,6 +75,9 @@ struct SpyFallStateView: View {
         .background(Color.white)
         .onAppear {
             print("🕵️‍♀️ SpyFallStateView 진입 - 역할: \(sessionManager.role), 장소: \(sessionManager.location), 세부 역할: \(sessionManager.citizenRole)")
+        }
+        .sheet(isPresented: $showLocationGuessingView) {
+            LocationGuessingView()
         }
     }
 }

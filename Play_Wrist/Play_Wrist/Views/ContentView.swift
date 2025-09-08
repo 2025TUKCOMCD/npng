@@ -1,8 +1,9 @@
 import SwiftUI
-import CryptoKit
 import AuthenticationServices
 import FirebaseAuth
+import CryptoKit
 
+// ✅ 앱 진입점
 struct ContentView: View {
     @StateObject private var viewModel = AppleSignInViewModel()
     
@@ -17,170 +18,170 @@ struct ContentView: View {
         }
         .onAppear {
             viewModel.checkAuthState()
-            _ = PhoneWatchConnector.shared // ✅ iPhone에서 세션 활성화
+            _ = PhoneWatchConnector.shared // ✅ iPhone ↔ Watch 연결
         }
     }
 }
-
-
-
-
-// ✅ Apple 로그인 & Firebase 관리 뷰 모델
+// ✅ Apple 로그인 및 Firebase 연동 ViewModel
 class AppleSignInViewModel: NSObject, ObservableObject, ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
-    
+
     @Published var isSignedIn = false
     @Published var userID: String?
     @Published var userEmail: String?
     @Published var userName: String?
-    
+    @Published var idToken: String? = nil
+
     @Published var winCount: Int = 0
-        @Published var loseCount: Int = 0
-        
-        // ✅ 승률 계산
-        var winRate: Double {
-            let total = winCount + loseCount
-            return total == 0 ? 0 : (Double(winCount) / Double(total) * 100)
-        }
+    @Published var loseCount: Int = 0
 
-        // ✅ 수동 기록 함수
-        func recordWin() {
-            winCount += 1
-        }
+    var winRate: Double {
+        let total = winCount + loseCount
+        return total == 0 ? 0 : (Double(winCount) / Double(total) * 100)
+    }
 
-        func recordLose() {
-            loseCount += 1
-        }
+    func recordWin() { winCount += 1 }
+    func recordLose() { loseCount += 1 }
 
-        // 로그아웃 시 초기화
-        func signOut() {
-            do {
-                try Auth.auth().signOut()
-                DispatchQueue.main.async {
-                    self.isSignedIn = false
-                    self.userID = nil
-                    self.userEmail = nil
-                    self.userName = nil
-                    self.winCount = 0 // 승패 초기화
-                    self.loseCount = 0
-                }
-            } catch {
-                print("❌ 로그아웃 실패: \(error.localizedDescription)")
-            }
-        }
-    
     fileprivate var currentNonce: String?
-    
+
     func startSignInWithAppleFlow(request: ASAuthorizationAppleIDRequest) {
         let nonce = randomNonceString()
         currentNonce = nonce
         request.requestedScopes = [.fullName, .email]
         request.nonce = sha256(nonce)
     }
-    
+
     func handleSignInResult(result: Result<ASAuthorization, Error>) {
         switch result {
         case .success(let authorization):
-            if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-                guard let nonce = currentNonce else { return }
-                guard let appleIDToken = appleIDCredential.identityToken else { return }
-                guard let idTokenString = String(data: appleIDToken, encoding: .utf8) else { return }
+            guard let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential,
+                  let nonce = currentNonce,
+                  let appleIDToken = appleIDCredential.identityToken,
+                  let idTokenString = String(data: appleIDToken, encoding: .utf8)
+            else { return }
 
-                let credential = OAuthProvider.appleCredential(
-                    withIDToken: idTokenString,
-                    rawNonce: nonce,
-                    fullName: appleIDCredential.fullName
-                )
+            let credential = OAuthProvider.appleCredential(
+                withIDToken: idTokenString,
+                rawNonce: nonce,
+                fullName: appleIDCredential.fullName
+            )
 
-                Auth.auth().signIn(with: credential) { authResult, error in
+            Auth.auth().signIn(with: credential) { authResult, error in
+                if let error = error {
+                    print("❌ Firebase 로그인 실패: \(error.localizedDescription)")
+                    return
+                }
+
+                guard let user = Auth.auth().currentUser else { return }
+
+                // ✅ ID 토큰 요청
+                user.getIDTokenForcingRefresh(true) { token, error in
                     if let error = error {
-                        print("❌ Firebase 로그인 실패: \(error.localizedDescription)")
+                        print("❌ 토큰 요청 실패: \(error.localizedDescription)")
                         return
                     }
 
-                    if let user = Auth.auth().currentUser {
-                        DispatchQueue.main.async {
-                            self.isSignedIn = true
-                            self.userID = user.uid
-                            self.userEmail = user.email
+                    DispatchQueue.main.async {
+                        self.isSignedIn = true
+                        self.userID = user.uid
+                        self.userEmail = user.email
+                        self.idToken = token
 
-                            if let fullName = appleIDCredential.fullName {
-                                let name = "\(fullName.familyName ?? "")\(fullName.givenName ?? "")"
-                                if !name.isEmpty {
-                                    self.userName = name
-                                    self.updateUserNameInFirebase(name: name)
-                                }
+                        if let fullName = appleIDCredential.fullName {
+                            let name = "\(fullName.familyName ?? "")\(fullName.givenName ?? "")"
+                            if !name.isEmpty {
+                                self.userName = name
+                                self.updateUserNameInFirebase(name: name)
                             } else {
                                 self.userName = user.displayName ?? user.email
                             }
-
-                            // ✅ Firebase 인증 성공 로그 출력!
-                            print("✅ Firebase 인증 성공! 🎉")
-                            print("🆔 UID: \(user.uid)")
-                            print("📧 이메일: \(user.email ?? "이메일 없음")")
-                            print("🙍‍♂️ 이름: \(self.userName ?? "이름 없음")")
+                        } else {
+                            self.userName = user.displayName ?? user.email
                         }
+
+                        print("✅ 로그인 성공: \(self.userName ?? "이름 없음")")
+                        print("🔑 토큰: \(token ?? "없음")")
                     }
                 }
             }
+
         case .failure(let error):
-            print("Apple 로그인 오류: \(error.localizedDescription)")
+            print("❌ Apple 로그인 실패: \(error.localizedDescription)")
         }
     }
-    
+
     private func updateUserNameInFirebase(name: String) {
-        if let user = Auth.auth().currentUser {
-            let changeRequest = user.createProfileChangeRequest()
-            changeRequest.displayName = name
-            changeRequest.commitChanges { error in
-                if let error = error {
-                    print("❌ Firebase에 사용자 이름 저장 실패: \(error.localizedDescription)")
-                } else {
-                    print("✅ Firebase에 사용자 이름 저장 완료: \(name)")
+        guard let user = Auth.auth().currentUser else { return }
+
+        let changeRequest = user.createProfileChangeRequest()
+        changeRequest.displayName = name
+        changeRequest.commitChanges { error in
+            if let error = error {
+                print("❌ 이름 저장 실패: \(error.localizedDescription)")
+            } else {
+                print("✅ 이름 저장 완료: \(name)")
+            }
+        }
+    }
+
+    func checkAuthState() {
+        guard let user = Auth.auth().currentUser else { return }
+
+        DispatchQueue.main.async {
+            self.isSignedIn = true
+            self.userID = user.uid
+            self.userEmail = user.email
+            self.userName = user.displayName ?? user.email
+        }
+
+        user.getIDTokenForcingRefresh(true) { token, error in
+            if let error = error {
+                print("❌ 토큰 갱신 실패: \(error.localizedDescription)")
+            } else {
+                DispatchQueue.main.async {
+                    self.idToken = token
+                    print("🔁 토큰 갱신 완료")
                 }
             }
         }
     }
-    
-    
-    func checkAuthState() {
-        if let user = Auth.auth().currentUser {
+
+    func signOut() {
+        do {
+            try Auth.auth().signOut()
             DispatchQueue.main.async {
-                self.isSignedIn = true
-                self.userID = user.uid
-                self.userEmail = user.email
-                self.userName = user.displayName ?? user.email
+                self.isSignedIn = false
+                self.userID = nil
+                self.userEmail = nil
+                self.userName = nil
+                self.idToken = nil
+                self.winCount = 0
+                self.loseCount = 0
             }
+        } catch {
+            print("❌ 로그아웃 실패: \(error.localizedDescription)")
         }
     }
-    
-    
+
+    // MARK: - Apple 로그인 관련 유틸
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return UIApplication.shared.connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .first?.windows.first ?? UIWindow()
     }
-    
-    // ✅ Apple 로그인용 난수(Nonce) 생성
+
     func randomNonceString(length: Int = 32) -> String {
         precondition(length > 0)
-        var randomBytes = [UInt8](repeating: 0, count: length)
-        let errorCode = SecRandomCopyBytes(kSecRandomDefault, randomBytes.count, &randomBytes)
-        if errorCode != errSecSuccess {
-            fatalError("난수 생성 실패: SecRandomCopyBytes 오류 코드 \(errorCode)")
-        }
-        
+        var bytes = [UInt8](repeating: 0, count: length)
+        let result = SecRandomCopyBytes(kSecRandomDefault, bytes.count, &bytes)
+        if result != errSecSuccess { fatalError("Nonce 생성 실패") }
+
         let charset: [Character] = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        let nonce = randomBytes.map { byte in
-            charset[Int(byte) % charset.count]
-        }
-        return String(nonce)
+        return String(bytes.map { charset[Int($0) % charset.count] })
     }
-    
-    // ✅ SHA256 해싱 (Apple 로그인 보안용)
+
     func sha256(_ input: String) -> String {
-        let inputData = Data(input.utf8)
-        let hashedData = SHA256.hash(data: inputData)
-        return hashedData.map { String(format: "%02x", $0) }.joined()
+        let hashed = SHA256.hash(data: Data(input.utf8))
+        return hashed.map { String(format: "%02x", $0) }.joined()
     }
 }
- 
