@@ -3,25 +3,18 @@ import FirebaseAuth
 
 struct GameLobbyView: View {
     let room: Room
+
     @EnvironmentObject var authViewModel: AppleSignInViewModel
+    @EnvironmentObject var roomViewModel: RoomViewModel    // ✅ 상위에서 주입되어야 함
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var viewModel = GameLobbyViewModel()
 
     @State private var playerStates: [String: String] = [:]
     @State private var shouldNavigateToBombParty = false
     @State private var shouldNavigateToSpyFall = false
 
-    private var fullPlayers: [String] {
-        getFullPlayers()
-    }
-
-    private var leftPlayers: [String] {
-        Array(fullPlayers.prefix(fullPlayers.count / 2))
-    }
-
-    private var rightPlayers: [String] {
-        Array(fullPlayers.suffix(fullPlayers.count - fullPlayers.count / 2))
-    }
+    private var fullPlayers: [String] { getFullPlayers() }
+    private var leftPlayers: [String] { Array(fullPlayers.prefix(fullPlayers.count / 2)) }
+    private var rightPlayers: [String] { Array(fullPlayers.suffix(fullPlayers.count - fullPlayers.count / 2)) }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -77,47 +70,7 @@ struct GameLobbyView: View {
 
             // 🔹 버튼 영역
             if authViewModel.userName == room.hostName {
-                Button(action: {
-                    guard let user = Auth.auth().currentUser else { return }
-
-                    // ✅ 항상 최신 토큰을 강제로 가져오기
-                    user.getIDTokenForcingRefresh(true) { idToken, error in
-                        if let error = error {
-                            print("❌ [startGame] 토큰 가져오기 실패: \(error.localizedDescription)")
-                            return
-                        }
-
-                        guard let idToken = idToken else {
-                            print("❌ [startGame] idToken이 nil임")
-                            return
-                        }
-
-                        print("📡 [startGame] 요청 준비 완료 - roomId: \(room.id)")
-
-                        APIService.shared.startGame(roomId: room.id, idToken: idToken) { success in
-                            if success {
-                                DispatchQueue.main.async {
-                                    if room.game == "Bomb Party" {
-                                        sendReadyPlayersToWatch()
-                                        shouldNavigateToBombParty = true
-                                        PhoneWatchConnector.shared.send(message: [
-                                            "event": "startGame",
-                                            "gameType": "BombParty"
-                                        ])
-                                    } else if room.game == "SPY Fall" {
-                                        shouldNavigateToSpyFall = true
-                                        PhoneWatchConnector.shared.send(message: [
-                                            "event": "startGame",
-                                            "gameType": "SpyFall"
-                                        ])
-                                    }
-                                }
-                            } else {
-                                print("⚠️ [startGame] 게임 시작 실패")
-                            }
-                        }
-                    }
-                }) {
+                Button(action: startGameTapped) {
                     Text("Start")
                         .fontWeight(.bold)
                         .frame(maxWidth: .infinity)
@@ -148,30 +101,71 @@ struct GameLobbyView: View {
             }
 
             // Navigation Links
-            NavigationLink(destination: BombPartyGamePlayView(room: room).environmentObject(authViewModel), isActive: $shouldNavigateToBombParty) { EmptyView() }
-            NavigationLink(destination: SpyFallGamePlayView(room: room).environmentObject(authViewModel), isActive: $shouldNavigateToSpyFall) { EmptyView() }
+            NavigationLink(
+                destination: BombPartyGamePlayView(room: room).environmentObject(authViewModel),
+                isActive: $shouldNavigateToBombParty
+            ) { EmptyView() }
+
+            NavigationLink(
+                destination: SpyFallGamePlayView(room: room).environmentObject(authViewModel),
+                isActive: $shouldNavigateToSpyFall
+            ) { EmptyView() }
         }
         .background(Color.white.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .onAppear { initializePlayerStates() }
     }
 
+    // MARK: - Actions
+
+    private func startGameTapped() {
+        guard let user = Auth.auth().currentUser else { return }
+
+        user.getIDTokenForcingRefresh(true) { idToken, error in
+            if let error = error {
+                print("❌ [startGame] 토큰 가져오기 실패: \(error.localizedDescription)")
+                return
+            }
+            guard let idToken = idToken else {
+                print("❌ [startGame] idToken nil")
+                return
+            }
+
+            // ✅ EnvironmentObject에서 직접 메서드 호출 (주의: 절대 $roomViewModel 아님)
+
+            // 필요 시 즉시 전환 (서버 푸시 대기 없이)
+            DispatchQueue.main.async {
+                if room.game == "Bomb Party" {
+                    sendReadyPlayersToWatch()
+                    shouldNavigateToBombParty = true
+                    PhoneWatchConnector.shared.send(message: ["event": "startGame", "gameType": "BombParty"])
+                } else if room.game == "SPY Fall" {
+                    shouldNavigateToSpyFall = true
+                    PhoneWatchConnector.shared.send(message: ["event": "startGame", "gameType": "SpyFall"])
+                }
+            }
+        }
+    }
+
+    // MARK: - Helpers
+
     private func isPlayerReady(_ name: String) -> Bool {
-        return !name.isEmpty && playerStates[name] == "Ready"
+        !name.isEmpty && playerStates[name] == "Ready"
     }
 
     private func getFullPlayers() -> [String] {
-        var playersSet = Set(room.players)
-        playersSet.insert(room.hostName)
-        let players = Array(playersSet)
+        // Player → 이름만 추출해서 Set<String> 사용 (Hashable 에러 회피)
+        var names = Set(room.players.map { $0.name })
+        names.insert(room.hostName)
+        let players = Array(names)
         return players + Array(repeating: "", count: max(0, room.maxPlayers - players.count))
     }
 
     private func initializePlayerStates() {
-        var playersSet = Set(room.players)
-        playersSet.insert(room.hostName)
-        for player in playersSet {
-            playerStates[player] = (player == room.hostName) ? "Ready" : "Normal"
+        var names = Set(room.players.map { $0.name })
+        names.insert(room.hostName)
+        for name in names {
+            playerStates[name] = (name == room.hostName) ? "Ready" : "Normal"
         }
     }
 

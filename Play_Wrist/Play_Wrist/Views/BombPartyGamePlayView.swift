@@ -16,13 +16,13 @@ struct BombPartyGamePlayView: View {
                 .font(.title2)
                 .padding()
 
-            Text("게임 참가자: \(room.players.joined(separator: ", "))")
+            // ✅ Player 배열에서 name만 뽑아 ", "로 합치기 (역슬래시 없이!)
+            Text("게임 참가자: \(room.players.map { $0.name }.joined(separator: ", "))")
                 .font(.body)
                 .padding()
 
             Spacer()
 
-            // 추가: 시작하면서 Watch로 게임 시작 메시지 전송
             Button(action: {
                 sendGameStartToWatch()
             }) {

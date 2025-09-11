@@ -40,13 +40,13 @@ struct RoomListView: View {
         .onAppear {
             if roomViewModel.rooms.isEmpty {
                 let testRoom = Room(
-                    id: Int.random(in: 1000...9999),
+                    id: "string",
                     title: "🛠 테스트용 예비방",
                     game: "폭탄 넘기기",
                     password: "test",
                     maxPlayers: 4,
                     hostName: "테스트유저",
-                    players: ["테스트유저"]
+                    players: []
                 )
                 roomViewModel.rooms.append(testRoom)
             }

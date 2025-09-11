@@ -1,124 +1,127 @@
 import Foundation
+import Combine
 
-// MARK: - Room 모델
-struct Room: Codable, Identifiable {
-    let id: Int
+// MARK: - Models
+
+
+struct Room: Codable, Identifiable, Equatable {
+    let id: String
     let title: String
     let game: String
     let password: String
     let maxPlayers: Int
     let hostName: String
-    var players: [String]
+    var players: [Player]
 }
 
-// MARK: - APIService 싱글톤
-final class APIService {
-    static let shared = APIService()
-    private init() {}
+// MARK: - WebSocket Message Protocol
 
-    let baseURL = "http://43.201.195.113:8000"
+enum WSAction: String, Codable {
+    // 헬스체크/에러
+    case ping, pong, error
 
-    // ✅ 방 목록 조회
-    func fetchRooms(completion: @escaping ([Room]) -> Void) {
-        guard let url = URL(string: "\(baseURL)/rooms") else { return }
+    // 요청(Request)
+    case fetchRooms
+    case createRoom
+    case joinRoom
+    case leaveRoom
+    case toggleReady
+    case setRole
+    case startGame
 
-        URLSession.shared.dataTask(with: url) { data, _, _ in
-            guard let data = data,
-                  let decoded = try? JSONDecoder().decode([Room].self, from: data) else { return }
-            DispatchQueue.main.async {
-                completion(decoded)
-            }
-        }.resume()
-    }
+    // 서버 푸시(Push/Broadcast)
+    case roomsUpdated
+    case joined
+    case left           
+    case playerUpdated
+    case gameStarted
+}
 
-    // ✅ 방 생성
-    func createRoom(_ room: Room, completion: @escaping (Room?) -> Void) {
-        guard let url = URL(string: "\(baseURL)/rooms/create") else { return }
+struct WSRequest<T: Codable>: Codable {
+    let action: WSAction
+    let requestId: String
+    let payload: T?
+}
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+struct WSResponse<T: Codable>: Codable {
+    let action: WSAction
+    let requestId: String?
+    let payload: T?
+    let error: String?
+}
 
-        guard let body = try? JSONEncoder().encode(room) else { return }
-        request.httpBody = body
+// MARK: - Payloads
 
-        URLSession.shared.dataTask(with: request) { data, _, _ in
-            guard let data = data,
-                  let createdRoom = try? JSONDecoder().decode(Room.self, from: data) else {
-                completion(nil)
-                return
-            }
-            DispatchQueue.main.async {
-                completion(createdRoom)
-            }
-        }.resume()
-    }
+struct FetchRoomsPayload: Codable { } // 빈 페이로드
 
-    // ✅ 방 입장
-    func joinRoom(roomID: Int, userName: String, password: String, completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "\(baseURL)/rooms/\(roomID)/join") else { return }
+struct CreateRoomPayload: Codable {
+    let room: Room
+}
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+struct JoinRoomPayload: Codable {
+    let roomId: String
+    let userName: String
+    let password: String
+}
 
-        let body: [String: Any] = [
-            "user_name": userName,
-            "password": password
-        ]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+struct LeaveRoomPayload: Codable {
+    let roomId: String
+    let playerId: String
+}
 
-        URLSession.shared.dataTask(with: request) { data, response, _ in
-            guard let httpResponse = response as? HTTPURLResponse else {
-                completion(false)
-                return
-            }
-            DispatchQueue.main.async {
-                completion(httpResponse.statusCode == 200)
-            }
-        }.resume()
-    }
+struct ToggleReadyPayload: Codable {
+    let roomId: String
+    let playerId: String
+}
 
-    // ✅ 게임 시작
-    func startGame(roomId: Int, idToken: String, completion: @escaping (Bool) -> Void) {
-        guard let url = URL(string: "\(baseURL)/rooms/\(roomId)/start") else {
-            print("🚫 잘못된 URL입니다.")
-            completion(false)
-            return
-        }
+struct SetRolePayload: Codable {
+    let roomId: String
+    let playerId: String
+    let role: String?  // nil이면 역할 제거
+}
 
-        print("📡 [startGame] 요청 준비 완료 - roomId: \(roomId)")
+struct StartGamePayload: Codable {
+    let roomId: String
+    let idToken: String
+}
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(idToken)", forHTTPHeaderField: "Authorization")
+// MARK: - Results (응답 바디)
+struct RoomsUpdatedPayload: Codable {
+    let rooms: [Room]
+}
 
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("❌ [startGame] 요청 실패: \(error.localizedDescription)")
-                completion(false)
-                return
-            }
+struct JoinedPayload: Codable {
+    let room: Room
+}
 
-            guard let httpResponse = response as? HTTPURLResponse else {
-                print("⚠️ [startGame] 유효하지 않은 응답")
-                completion(false)
-                return
-            }
+struct LeftPayload: Codable {
+    let room: Room
+}
 
-            print("📬 [startGame] 응답 상태 코드: \(httpResponse.statusCode)")
+struct PlayerUpdatedPayload: Codable {
+    let room: Room
+}
 
-            if let data = data, let bodyString = String(data: data, encoding: .utf8) {
-                print("📦 [startGame] 응답 본문: \(bodyString)")
-            }
+struct CreateRoomResult: Codable {
+    let room: Room
+}
 
-            if httpResponse.statusCode == 200 {
-                print("✅ [startGame] 게임 시작 성공")
-                completion(true)
-            } else {
-                print("⚠️ [startGame] 게임 시작 실패 - 상태 코드: \(httpResponse.statusCode)")
-                completion(false)
-            }
-        }.resume()
-    }
+struct JoinRoomResult: Codable {
+    let room: Room
+}
+
+struct LeaveRoomResult: Codable {
+    let room: Room
+}
+
+struct ToggleReadyResult: Codable {
+    let room: Room
+}
+
+struct SetRoleResult: Codable {
+    let room: Room
+}
+
+struct StartGameResult: Codable {
+    let success: Bool
 }

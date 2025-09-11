@@ -1,72 +1,214 @@
 import Foundation
+import Combine
 
-class GameLobbyViewModel: ObservableObject {
-    @Published var bombHolderId: Int?
-    @Published var roleAssignments: [Int: String] = [:]
-    @Published var location: String?
+// MARK: - WebSocket Service
 
-    let baseURL = "http://15.164.50.19:8000"
+@MainActor
+final class WebSocketService: ObservableObject {
+    static let shared = WebSocketService()
+    private init() {}
 
-    // 🔸 Bomb Holder 이름 반환
-    func assignBomb(roomId: Int, idToken: String?, completion: @escaping (String?) -> Void) {
-        guard let token = idToken,
-              let url = URL(string: "\(baseURL)/rooms/\(roomId)/assign-bomb") else {
-            completion(nil)
-            return
+    private let wsURLString = "ws://43.201.195.113:8000/ws"
+    private var webSocketTask: URLSessionWebSocketTask?
+    private let session = URLSession(configuration: .default)
+
+    private var receiveLoopActive = false
+    private var pingTimer: Timer?
+
+    // 요청/응답 매칭
+    private var pending: [String: (Result<Data, Error>) -> Void] = [:]
+
+    // 서버 푸시
+    let roomsSubject = PassthroughSubject<[Room], Never>()
+    let joinedRoomSubject = PassthroughSubject<Room, Never>()
+    let leftRoomSubject = PassthroughSubject<Room, Never>()
+    let playerUpdatedSubject = PassthroughSubject<Room, Never>()
+    let gameStartedSubject = PassthroughSubject<String, Never>() // roomId
+
+    // MARK: connect / disconnect
+
+    func connect() {
+        guard webSocketTask == nil, let url = URL(string: wsURLString) else { return }
+        webSocketTask = session.webSocketTask(with: url)
+        webSocketTask?.resume()
+        startReceiveLoop()
+        startPing()
+    }
+
+    func disconnect() {
+        pingTimer?.invalidate(); pingTimer = nil
+        receiveLoopActive = false
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+        webSocketTask = nil
+    }
+
+    private func startPing() {
+        pingTimer?.invalidate()
+        pingTimer = Timer.scheduledTimer(withTimeInterval: 20, repeats: true) { [weak self] _ in
+            Task { await self?.sendPing() }
+        }
+    }
+
+    private func sendPing() async {
+        guard let task = webSocketTask else { return }
+        let ping = WSRequest<FetchRoomsPayload>(action: .ping, requestId: UUID().uuidString, payload: nil)
+        if let data = try? JSONEncoder().encode(ping),
+           let text = String(data: data, encoding: .utf8) {
+            task.send(.string(text)) { error in
+                if let error = error { print("Ping error: \(error)") }
+            }
+        }
+    }
+
+    private func startReceiveLoop() {
+        guard let task = webSocketTask, !receiveLoopActive else { return }
+        receiveLoopActive = true
+        func recv() {
+            task.receive { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .failure(let err):
+                    print("receive error: \(err)")
+                    self.receiveLoopActive = false
+                    self.disconnect() // 재연결 없음
+                case .success(let msg):
+                    self.handle(message: msg)
+                    if self.receiveLoopActive { recv() }
+                }
+            }
+        }
+        recv()
+    }
+
+    private func handle(message: URLSessionWebSocketTask.Message) {
+        switch message {
+        case .string(let text):
+            guard let data = text.data(using: .utf8) else { return }
+            routeIncoming(data: data)
+        case .data(let data):
+            routeIncoming(data: data)
+        @unknown default: break
+        }
+    }
+
+    private func routeIncoming(data: Data) {
+        struct Head: Codable { let action: WSAction; let requestId: String?; let error: String? }
+        guard let head = try? JSONDecoder().decode(Head.self, from: data) else {
+            print("unknown msg: \(String(data: data, encoding: .utf8) ?? "")"); return
         }
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        // 요청-응답 매칭
+        if let reqId = head.requestId, let resolver = pending.removeValue(forKey: reqId) {
+            resolver(.success(data)); return
+        }
 
-        URLSession.shared.dataTask(with: request) { data, _, _ in
-            if let data = data,
-               let result = try? JSONDecoder().decode(BombAssignResponse.self, from: data) {
-                DispatchQueue.main.async {
-                    self.bombHolderId = result.bomb_holder_id
-                    completion(result.bomb_holder_name)
-                }
-            } else {
-                completion(nil)
+        // 서버 푸시
+        switch head.action {
+        case .roomsUpdated:
+            if let res = try? JSONDecoder().decode(WSResponse<RoomsUpdatedPayload>.self, from: data),
+               let rooms = res.payload?.rooms { roomsSubject.send(rooms) }
+        case .joined:
+            if let res = try? JSONDecoder().decode(WSResponse<JoinedPayload>.self, from: data),
+               let room = res.payload?.room { joinedRoomSubject.send(room) }
+        case .left:
+            if let res = try? JSONDecoder().decode(WSResponse<LeftPayload>.self, from: data),
+               let room = res.payload?.room { leftRoomSubject.send(room) }
+        case .playerUpdated:
+            if let res = try? JSONDecoder().decode(WSResponse<PlayerUpdatedPayload>.self, from: data),
+               let room = res.payload?.room { playerUpdatedSubject.send(room) }
+        case .gameStarted:
+            struct GameStartedPayload: Codable { let roomId: String }
+            if let res = try? JSONDecoder().decode(WSResponse<GameStartedPayload>.self, from: data),
+               let roomId = res.payload?.roomId { gameStartedSubject.send(roomId) }
+        case .pong: break
+        case .error:
+            if let res = try? JSONDecoder().decode(WSResponse<FetchRoomsPayload>.self, from: data) {
+                print("server error push: \(res.error ?? "unknown")")
             }
-        }.resume()
+        default:
+            print("unhandled push: \(head.action)")
+        }
     }
 
-    // 🔸 SpyFall 역할 할당
-    func assignSpyFallRoles(roomId: Int, idToken: String?, completion: @escaping ([SpyFallRoleResult]) -> Void) {
-        guard let token = idToken,
-              let url = URL(string: "\(baseURL)/rooms/\(roomId)/assign-roles") else { return }
+    // MARK: Request/Response 공통
 
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+    private func sendRequest<RQ: Codable, RS: Codable>(
+        _ action: WSAction,
+        payload: RQ?,
+        responseType: RS.Type
+    ) async throws -> RS {
+        guard let task = webSocketTask else { throw URLError(.notConnectedToInternet) }
 
-        URLSession.shared.dataTask(with: request) { data, _, _ in
-            if let data = data,
-               let result = try? JSONDecoder().decode(SpyFallAssignResponse.self, from: data) {
-                DispatchQueue.main.async {
-                    completion(result.results)
+        let reqId = UUID().uuidString
+        let request = WSRequest<RQ>(action: action, requestId: reqId, payload: payload)
+        let data = try JSONEncoder().encode(request)
+        guard let text = String(data: data, encoding: .utf8) else {
+            throw NSError(domain: "WS", code: -100, userInfo: [NSLocalizedDescriptionKey: "UTF-8 encode failed"])
+        }
+
+        return try await withCheckedThrowingContinuation { (cont: CheckedContinuation<RS, Error>) in
+            pending[reqId] = { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case .failure(let err): cont.resume(throwing: err)
+                case .success(let data):
+                    do {
+                        let decoded = try JSONDecoder().decode(WSResponse<RS>.self, from: data)
+                        if let err = decoded.error {
+                            cont.resume(throwing: NSError(domain: "WS", code: -1, userInfo: [NSLocalizedDescriptionKey: err]))
+                        } else if let payload = decoded.payload {
+                            cont.resume(returning: payload)
+                        } else {
+                            cont.resume(throwing: NSError(domain: "WS", code: -2, userInfo: [NSLocalizedDescriptionKey: "Empty payload"]))
+                        }
+                    } catch { cont.resume(throwing: error) }
                 }
+                self.pending.removeValue(forKey: reqId)
             }
-        }.resume()
+
+            task.send(.string(text)) { [weak self] error in
+                if let error { _ = self?.pending.removeValue(forKey: reqId); cont.resume(throwing: error) }
+            }
+        }
+    }
+
+    // MARK: Public API (Room 관련)
+
+    func fetchRooms() async throws -> [Room] {
+        struct RoomsList: Codable { let rooms: [Room] }
+        let res: RoomsList = try await sendRequest(.fetchRooms, payload: FetchRoomsPayload(), responseType: RoomsList.self)
+        return res.rooms
+    }
+
+    func createRoom(_ room: Room) async throws -> Room {
+        let res: CreateRoomResult = try await sendRequest(.createRoom, payload: CreateRoomPayload(room: room), responseType: CreateRoomResult.self)
+        return res.room
+    }
+
+    func joinRoom(roomId: String, userName: String, password: String) async throws -> Room {
+        let res: JoinRoomResult = try await sendRequest(.joinRoom, payload: JoinRoomPayload(roomId: roomId, userName: userName, password: password), responseType: JoinRoomResult.self)
+        return res.room
+    }
+
+    func leaveRoom(roomId: String, playerId: String) async throws -> Room {
+        let res: LeaveRoomResult = try await sendRequest(.leaveRoom, payload: LeaveRoomPayload(roomId: roomId, playerId: playerId), responseType: LeaveRoomResult.self)
+        return res.room
+    }
+
+    func toggleReady(roomId: String, playerId: String) async throws -> Room {
+        let res: ToggleReadyResult = try await sendRequest(.toggleReady, payload: ToggleReadyPayload(roomId: roomId, playerId: playerId), responseType: ToggleReadyResult.self)
+        return res.room
+    }
+
+    func setRole(roomId: String, playerId: String, role: String?) async throws -> Room {
+        let res: SetRoleResult = try await sendRequest(.setRole, payload: SetRolePayload(roomId: roomId, playerId: playerId, role: role), responseType: SetRoleResult.self)
+        return res.room
+    }
+
+    func startGame(roomId: String, idToken: String) async throws -> Bool {
+        let res: StartGameResult = try await sendRequest(.startGame, payload: StartGamePayload(roomId: roomId, idToken: idToken), responseType: StartGameResult.self)
+        return res.success
     }
 }
 
-// MARK: - 서버 응답 모델들
 
-struct BombAssignResponse: Codable {
-    let bomb_holder_id: Int
-    let bomb_holder_name: String
-}
-
-struct SpyFallAssignResponse: Codable {
-    let results: [SpyFallRoleResult]
-}
-
-struct SpyFallRoleResult: Codable {
-    let userId: Int
-    let userName: String
-    let role: String
-    let location: String
-    let citizenRole: String?
-}

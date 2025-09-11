@@ -81,7 +81,7 @@ struct RoomSetupView: View {
             NavigationLink(
                 destination: GameLobbyView(
                     room: roomViewModel.room ?? Room(
-                        id: -1,
+                        id: "에러",
                         title: "에러",
                         game: selectedGame,
                         password: "",
