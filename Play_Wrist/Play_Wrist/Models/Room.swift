@@ -1,11 +1,44 @@
 import Foundation
 import Combine
 
-// MARK: - Models
 
+// MARK: - 액션 키워드 (서버와 문자열 일치시켜야 함)
+enum WSAction: String, Codable {
+    // 요청/응답
+    case fetchRooms, createRoom, joinRoom, leaveRoom, toggleReady, setRole, startGame
+    // 핑퐁
+    case ping, pong
+    // 서버 푸시
+    case roomsUpdated, joined, left, playerUpdated, gameStarted
+    // 에러
+    case error
+}
+
+// MARK: - 공통 래퍼
+struct WSRequest<P: Codable>: Codable {
+    let action: WSAction
+    let requestId: String
+    let payload: P?
+}
+
+struct WSResponse<P: Codable>: Codable {
+    let action: WSAction
+    let requestId: String?
+    let error: String?
+    let payload: P?
+}
+
+// MARK: - 모델
+struct Player: Codable, Identifiable, Equatable {
+    let id: String
+    let name: String
+    var isReady: Bool
+    var role: String?
+    var isHost: Bool
+}
 
 struct Room: Codable, Identifiable, Equatable {
-    let id: String
+    let id: String            // 서버가 숫자를 주면 클라에서 문자열로 변환해서 넣어도 OK
     let title: String
     let game: String
     let password: String
@@ -14,114 +47,32 @@ struct Room: Codable, Identifiable, Equatable {
     var players: [Player]
 }
 
-// MARK: - WebSocket Message Protocol
+// MARK: - 페이로드 (서비스 코드에서 참조하던 구조)
+struct FetchRoomsPayload: Codable {}
 
-enum WSAction: String, Codable {
-    // 헬스체크/에러
-    case ping, pong, error
+struct RoomsUpdatedPayload: Codable { let rooms: [Room] }
+struct JoinedPayload: Codable { let room: Room }
+struct LeftPayload: Codable { let room: Room }
+struct PlayerUpdatedPayload: Codable { let room: Room }
 
-    // 요청(Request)
-    case fetchRooms
-    case createRoom
-    case joinRoom
-    case leaveRoom
-    case toggleReady
-    case setRole
-    case startGame
+// 생성
+struct CreateRoomPayload: Codable { let room: Room }
+struct CreateRoomResult: Codable { let room: Room }
 
-    // 서버 푸시(Push/Broadcast)
-    case roomsUpdated
-    case joined
-    case left           
-    case playerUpdated
-    case gameStarted
-}
+// 입장/퇴장
+struct JoinRoomPayload: Codable { let roomId: String, userName: String, password: String }
+struct JoinRoomResult: Codable { let room: Room }
 
-struct WSRequest<T: Codable>: Codable {
-    let action: WSAction
-    let requestId: String
-    let payload: T?
-}
+struct LeaveRoomPayload: Codable { let roomId: String, playerId: String }
+struct LeaveRoomResult: Codable { let room: Room }
 
-struct WSResponse<T: Codable>: Codable {
-    let action: WSAction
-    let requestId: String?
-    let payload: T?
-    let error: String?
-}
+// 준비/역할
+struct ToggleReadyPayload: Codable { let roomId: String, playerId: String }
+struct ToggleReadyResult: Codable { let room: Room }
 
-// MARK: - Payloads
+struct SetRolePayload: Codable { let roomId: String, playerId: String, role: String? }
+struct SetRoleResult: Codable { let room: Room }
 
-struct FetchRoomsPayload: Codable { } // 빈 페이로드
-
-struct CreateRoomPayload: Codable {
-    let room: Room
-}
-
-struct JoinRoomPayload: Codable {
-    let roomId: String
-    let userName: String
-    let password: String
-}
-
-struct LeaveRoomPayload: Codable {
-    let roomId: String
-    let playerId: String
-}
-
-struct ToggleReadyPayload: Codable {
-    let roomId: String
-    let playerId: String
-}
-
-struct SetRolePayload: Codable {
-    let roomId: String
-    let playerId: String
-    let role: String?  // nil이면 역할 제거
-}
-
-struct StartGamePayload: Codable {
-    let roomId: String
-    let idToken: String
-}
-
-// MARK: - Results (응답 바디)
-struct RoomsUpdatedPayload: Codable {
-    let rooms: [Room]
-}
-
-struct JoinedPayload: Codable {
-    let room: Room
-}
-
-struct LeftPayload: Codable {
-    let room: Room
-}
-
-struct PlayerUpdatedPayload: Codable {
-    let room: Room
-}
-
-struct CreateRoomResult: Codable {
-    let room: Room
-}
-
-struct JoinRoomResult: Codable {
-    let room: Room
-}
-
-struct LeaveRoomResult: Codable {
-    let room: Room
-}
-
-struct ToggleReadyResult: Codable {
-    let room: Room
-}
-
-struct SetRoleResult: Codable {
-    let room: Room
-}
-
-struct StartGameResult: Codable {
-    let success: Bool
-}
+// 게임 시작
+struct StartGamePayload: Codable { let roomId: String, idToken: String }
+struct StartGameResult: Codable { let success: Bool }

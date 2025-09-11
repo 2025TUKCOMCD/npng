@@ -4,6 +4,7 @@ import WatchConnectivity
 struct RoomSetupView: View {
     var selectedGame: String
     @EnvironmentObject var authViewModel: AppleSignInViewModel
+
     @StateObject private var roomViewModel = RoomViewModel()
     @Environment(\.dismiss) private var dismiss
 
@@ -11,6 +12,19 @@ struct RoomSetupView: View {
     @State private var password = ""
     @State private var playerCount = "4"
     @State private var shouldNavigate = false
+
+    // ✅ roomViewModel.room이 아직 없을 때 NavigationLink용 임시 값
+    private var fallbackRoom: Room {
+        Room(
+            id: "temp",
+            title: roomTitle.isEmpty ? "로딩 중…" : roomTitle,
+            game: selectedGame,
+            password: "",
+            maxPlayers: Int(playerCount) ?? 4,
+            hostName: authViewModel.userName ?? "user1",
+            players: []
+        )
+    }
 
     var body: some View {
         ZStack {
@@ -21,9 +35,7 @@ struct RoomSetupView: View {
                     // 닫기 버튼
                     HStack {
                         Spacer()
-                        Button(action: {
-                            dismiss()
-                        }) {
+                        Button(action: { dismiss() }) {
                             Image(systemName: "xmark")
                                 .font(.title2)
                                 .foregroundColor(.purple)
@@ -46,7 +58,7 @@ struct RoomSetupView: View {
                     // 다음 버튼
                     HStack {
                         Spacer()
-                        Button(action: {
+                        Button {
                             let host = authViewModel.userName ?? "user1"
                             roomViewModel.createRoom(
                                 title: roomTitle,
@@ -55,21 +67,23 @@ struct RoomSetupView: View {
                                 maxPlayers: Int(playerCount) ?? 4,
                                 hostName: host
                             )
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+
+                            // 생성 후 약간의 텀을 준 뒤 네비게이션
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                                 shouldNavigate = true
                             }
-                        }) {
+                        } label: {
                             ZStack {
                                 Circle()
                                     .fill(Color.purple)
                                     .frame(width: 60, height: 60)
                                     .shadow(radius: 10)
-
                                 Image(systemName: "arrow.right")
                                     .foregroundColor(.white)
                                     .font(.title2)
                             }
                         }
+                        .disabled(roomTitle.isEmpty)
                     }
                     .padding(.trailing, 24)
                     .padding(.bottom, 40)
@@ -77,29 +91,26 @@ struct RoomSetupView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
 
-            // ✅ NavigationLink는 ZStack 안, ScrollView 밖
+            // ✅ 값(Room) 전달 — 절대 $roomViewModel.room (Binding) 쓰지 마세요
             NavigationLink(
                 destination: GameLobbyView(
-                    room: roomViewModel.room ?? Room(
-                        id: "에러",
-                        title: "에러",
-                        game: selectedGame,
-                        password: "",
-                        maxPlayers: 4,
-                        hostName: "???",
-                        players: []
-                    )
-                ).environmentObject(authViewModel),
+                    room: roomViewModel.room ?? fallbackRoom
+                )
+                .environmentObject(authViewModel),
                 isActive: $shouldNavigate
-            ) {
-                EmptyView()
-            }
+            ) { EmptyView() }
         }
         .navigationTitle("방 만들기")
     }
 
-    // 일반 텍스트 필드
-    private func inputSection(title: String, placeholder: String, text: Binding<String>, keyboard: UIKeyboardType = .default) -> some View {
+    // MARK: - Inputs
+
+    private func inputSection(
+        title: String,
+        placeholder: String,
+        text: Binding<String>,
+        keyboard: UIKeyboardType = .default
+    ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.headline)
@@ -113,8 +124,11 @@ struct RoomSetupView: View {
         }
     }
 
-    // 비밀번호 필드
-    private func inputSecureSection(title: String, placeholder: String, text: Binding<String>) -> some View {
+    private func inputSecureSection(
+        title: String,
+        placeholder: String,
+        text: Binding<String>
+    ) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
                 .font(.headline)
