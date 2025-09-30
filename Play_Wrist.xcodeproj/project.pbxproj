@@ -1,0 +1,1010 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		4A2BDD722DB3AFA0006C7516 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 4A2BDD712DB3AFA0006C7516 /* FirebaseAnalytics */; };
+		4A2BDD742DB3AFA0006C7516 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 4A2BDD732DB3AFA0006C7516 /* FirebaseAuth */; };
+		4A2BDD762DB3AFA0006C7516 /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 4A2BDD752DB3AFA0006C7516 /* FirebaseCore */; };
+		4A4416B82DB3AFE70024F148 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A4416B72DB3AFE70024F148 /* GoogleService-Info.plist */; };
+		4AA415422DB4FF1100A43290 /* Play_Wrist_W Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 4AA415222DB4FF1000A43290 /* Play_Wrist_W Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		4A2BDD3B2DB3AEA4006C7516 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A2BDD252DB3AEA2006C7516 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A2BDD2C2DB3AEA2006C7516;
+			remoteInfo = Play_Wrist;
+		};
+		4A2BDD452DB3AEA4006C7516 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A2BDD252DB3AEA2006C7516 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A2BDD2C2DB3AEA2006C7516;
+			remoteInfo = Play_Wrist;
+		};
+		4AA4152F2DB4FF1100A43290 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A2BDD252DB3AEA2006C7516 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4AA415212DB4FF1000A43290;
+			remoteInfo = "Play_Wrist_W Watch App";
+		};
+		4AA415392DB4FF1100A43290 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A2BDD252DB3AEA2006C7516 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4AA415212DB4FF1000A43290;
+			remoteInfo = "Play_Wrist_W Watch App";
+		};
+		4AA415402DB4FF1100A43290 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A2BDD252DB3AEA2006C7516 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4AA415212DB4FF1000A43290;
+			remoteInfo = "Play_Wrist_W Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		4AB854F02DB4E5E600FA26B8 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				4AA415422DB4FF1100A43290 /* Play_Wrist_W Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		4A2BDD2D2DB3AEA2006C7516 /* Play_Wrist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Play_Wrist.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A2BDD3A2DB3AEA4006C7516 /* Play_WristTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Play_WristTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A2BDD442DB3AEA4006C7516 /* Play_WristUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Play_WristUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A4416B72DB3AFE70024F148 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4AA415222DB4FF1000A43290 /* Play_Wrist_W Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Play_Wrist_W Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AA4152E2DB4FF1100A43290 /* Play_Wrist_W Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Play_Wrist_W Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4AA415382DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Play_Wrist_W Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		4A2BDD2F2DB3AEA2006C7516 /* Play_Wrist */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Play_Wrist;
+			sourceTree = "<group>";
+		};
+		4A2BDD3D2DB3AEA4006C7516 /* Play_WristTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Play_WristTests;
+			sourceTree = "<group>";
+		};
+		4A2BDD472DB3AEA4006C7516 /* Play_WristUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Play_WristUITests;
+			sourceTree = "<group>";
+		};
+		4AA415232DB4FF1000A43290 /* Play_Wrist_W Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Play_Wrist_W Watch App";
+			sourceTree = "<group>";
+		};
+		4AA415312DB4FF1100A43290 /* Play_Wrist_W Watch AppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Play_Wrist_W Watch AppTests";
+			sourceTree = "<group>";
+		};
+		4AA4153B2DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Play_Wrist_W Watch AppUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		4A2BDD2A2DB3AEA2006C7516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A2BDD722DB3AFA0006C7516 /* FirebaseAnalytics in Frameworks */,
+				4A2BDD762DB3AFA0006C7516 /* FirebaseCore in Frameworks */,
+				4A2BDD742DB3AFA0006C7516 /* FirebaseAuth in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A2BDD372DB3AEA4006C7516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A2BDD412DB3AEA4006C7516 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA4151F2DB4FF1000A43290 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA4152B2DB4FF1100A43290 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA415352DB4FF1100A43290 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		4A2BDD242DB3AEA2006C7516 = {
+			isa = PBXGroup;
+			children = (
+				4A2BDD2F2DB3AEA2006C7516 /* Play_Wrist */,
+				4A2BDD3D2DB3AEA4006C7516 /* Play_WristTests */,
+				4A2BDD472DB3AEA4006C7516 /* Play_WristUITests */,
+				4AA415232DB4FF1000A43290 /* Play_Wrist_W Watch App */,
+				4AA415312DB4FF1100A43290 /* Play_Wrist_W Watch AppTests */,
+				4AA4153B2DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests */,
+				4A2BDD2E2DB3AEA2006C7516 /* Products */,
+				4A4416B72DB3AFE70024F148 /* GoogleService-Info.plist */,
+			);
+			sourceTree = "<group>";
+		};
+		4A2BDD2E2DB3AEA2006C7516 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A2BDD2D2DB3AEA2006C7516 /* Play_Wrist.app */,
+				4A2BDD3A2DB3AEA4006C7516 /* Play_WristTests.xctest */,
+				4A2BDD442DB3AEA4006C7516 /* Play_WristUITests.xctest */,
+				4AA415222DB4FF1000A43290 /* Play_Wrist_W Watch App.app */,
+				4AA4152E2DB4FF1100A43290 /* Play_Wrist_W Watch AppTests.xctest */,
+				4AA415382DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4A2BDD2C2DB3AEA2006C7516 /* Play_Wrist */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A2BDD4E2DB3AEA4006C7516 /* Build configuration list for PBXNativeTarget "Play_Wrist" */;
+			buildPhases = (
+				4A2BDD292DB3AEA2006C7516 /* Sources */,
+				4A2BDD2A2DB3AEA2006C7516 /* Frameworks */,
+				4A2BDD2B2DB3AEA2006C7516 /* Resources */,
+				4AB854F02DB4E5E600FA26B8 /* Embed Watch Content */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4AA415412DB4FF1100A43290 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4A2BDD2F2DB3AEA2006C7516 /* Play_Wrist */,
+			);
+			name = Play_Wrist;
+			packageProductDependencies = (
+				4A2BDD712DB3AFA0006C7516 /* FirebaseAnalytics */,
+				4A2BDD732DB3AFA0006C7516 /* FirebaseAuth */,
+				4A2BDD752DB3AFA0006C7516 /* FirebaseCore */,
+			);
+			productName = Play_Wrist;
+			productReference = 4A2BDD2D2DB3AEA2006C7516 /* Play_Wrist.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4A2BDD392DB3AEA4006C7516 /* Play_WristTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A2BDD512DB3AEA4006C7516 /* Build configuration list for PBXNativeTarget "Play_WristTests" */;
+			buildPhases = (
+				4A2BDD362DB3AEA4006C7516 /* Sources */,
+				4A2BDD372DB3AEA4006C7516 /* Frameworks */,
+				4A2BDD382DB3AEA4006C7516 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4A2BDD3C2DB3AEA4006C7516 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4A2BDD3D2DB3AEA4006C7516 /* Play_WristTests */,
+			);
+			name = Play_WristTests;
+			packageProductDependencies = (
+			);
+			productName = Play_WristTests;
+			productReference = 4A2BDD3A2DB3AEA4006C7516 /* Play_WristTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4A2BDD432DB3AEA4006C7516 /* Play_WristUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A2BDD542DB3AEA4006C7516 /* Build configuration list for PBXNativeTarget "Play_WristUITests" */;
+			buildPhases = (
+				4A2BDD402DB3AEA4006C7516 /* Sources */,
+				4A2BDD412DB3AEA4006C7516 /* Frameworks */,
+				4A2BDD422DB3AEA4006C7516 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4A2BDD462DB3AEA4006C7516 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4A2BDD472DB3AEA4006C7516 /* Play_WristUITests */,
+			);
+			name = Play_WristUITests;
+			packageProductDependencies = (
+			);
+			productName = Play_WristUITests;
+			productReference = 4A2BDD442DB3AEA4006C7516 /* Play_WristUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		4AA415212DB4FF1000A43290 /* Play_Wrist_W Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AA415492DB4FF1100A43290 /* Build configuration list for PBXNativeTarget "Play_Wrist_W Watch App" */;
+			buildPhases = (
+				4AA4151E2DB4FF1000A43290 /* Sources */,
+				4AA4151F2DB4FF1000A43290 /* Frameworks */,
+				4AA415202DB4FF1000A43290 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				4AA415232DB4FF1000A43290 /* Play_Wrist_W Watch App */,
+			);
+			name = "Play_Wrist_W Watch App";
+			packageProductDependencies = (
+			);
+			productName = "Play_Wrist_W Watch App";
+			productReference = 4AA415222DB4FF1000A43290 /* Play_Wrist_W Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
+		4AA4152D2DB4FF1100A43290 /* Play_Wrist_W Watch AppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AA4154A2DB4FF1100A43290 /* Build configuration list for PBXNativeTarget "Play_Wrist_W Watch AppTests" */;
+			buildPhases = (
+				4AA4152A2DB4FF1100A43290 /* Sources */,
+				4AA4152B2DB4FF1100A43290 /* Frameworks */,
+				4AA4152C2DB4FF1100A43290 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4AA415302DB4FF1100A43290 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4AA415312DB4FF1100A43290 /* Play_Wrist_W Watch AppTests */,
+			);
+			name = "Play_Wrist_W Watch AppTests";
+			packageProductDependencies = (
+			);
+			productName = "Play_Wrist_W Watch AppTests";
+			productReference = 4AA4152E2DB4FF1100A43290 /* Play_Wrist_W Watch AppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		4AA415372DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4AA4154B2DB4FF1100A43290 /* Build configuration list for PBXNativeTarget "Play_Wrist_W Watch AppUITests" */;
+			buildPhases = (
+				4AA415342DB4FF1100A43290 /* Sources */,
+				4AA415352DB4FF1100A43290 /* Frameworks */,
+				4AA415362DB4FF1100A43290 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4AA4153A2DB4FF1100A43290 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				4AA4153B2DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests */,
+			);
+			name = "Play_Wrist_W Watch AppUITests";
+			packageProductDependencies = (
+			);
+			productName = "Play_Wrist_W Watch AppUITests";
+			productReference = 4AA415382DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		4A2BDD252DB3AEA2006C7516 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1630;
+				LastUpgradeCheck = 1630;
+				TargetAttributes = {
+					4A2BDD2C2DB3AEA2006C7516 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					4A2BDD392DB3AEA4006C7516 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 4A2BDD2C2DB3AEA2006C7516;
+					};
+					4A2BDD432DB3AEA4006C7516 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 4A2BDD2C2DB3AEA2006C7516;
+					};
+					4AA415212DB4FF1000A43290 = {
+						CreatedOnToolsVersion = 16.3;
+					};
+					4AA4152D2DB4FF1100A43290 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 4AA415212DB4FF1000A43290;
+					};
+					4AA415372DB4FF1100A43290 = {
+						CreatedOnToolsVersion = 16.3;
+						TestTargetID = 4AA415212DB4FF1000A43290;
+					};
+				};
+			};
+			buildConfigurationList = 4A2BDD282DB3AEA2006C7516 /* Build configuration list for PBXProject "Play_Wrist" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 4A2BDD242DB3AEA2006C7516;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4A2BDD702DB3AFA0006C7516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 4A2BDD2E2DB3AEA2006C7516 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4A2BDD2C2DB3AEA2006C7516 /* Play_Wrist */,
+				4A2BDD392DB3AEA4006C7516 /* Play_WristTests */,
+				4A2BDD432DB3AEA4006C7516 /* Play_WristUITests */,
+				4AA415212DB4FF1000A43290 /* Play_Wrist_W Watch App */,
+				4AA4152D2DB4FF1100A43290 /* Play_Wrist_W Watch AppTests */,
+				4AA415372DB4FF1100A43290 /* Play_Wrist_W Watch AppUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		4A2BDD2B2DB3AEA2006C7516 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A4416B82DB3AFE70024F148 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A2BDD382DB3AEA4006C7516 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A2BDD422DB3AEA4006C7516 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA415202DB4FF1000A43290 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA4152C2DB4FF1100A43290 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA415362DB4FF1100A43290 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		4A2BDD292DB3AEA2006C7516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A2BDD362DB3AEA4006C7516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A2BDD402DB3AEA4006C7516 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA4151E2DB4FF1000A43290 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA4152A2DB4FF1100A43290 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4AA415342DB4FF1100A43290 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4A2BDD3C2DB3AEA4006C7516 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A2BDD2C2DB3AEA2006C7516 /* Play_Wrist */;
+			targetProxy = 4A2BDD3B2DB3AEA4006C7516 /* PBXContainerItemProxy */;
+		};
+		4A2BDD462DB3AEA4006C7516 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A2BDD2C2DB3AEA2006C7516 /* Play_Wrist */;
+			targetProxy = 4A2BDD452DB3AEA4006C7516 /* PBXContainerItemProxy */;
+		};
+		4AA415302DB4FF1100A43290 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4AA415212DB4FF1000A43290 /* Play_Wrist_W Watch App */;
+			targetProxy = 4AA4152F2DB4FF1100A43290 /* PBXContainerItemProxy */;
+		};
+		4AA4153A2DB4FF1100A43290 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4AA415212DB4FF1000A43290 /* Play_Wrist_W Watch App */;
+			targetProxy = 4AA415392DB4FF1100A43290 /* PBXContainerItemProxy */;
+		};
+		4AA415412DB4FF1100A43290 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4AA415212DB4FF1000A43290 /* Play_Wrist_W Watch App */;
+			targetProxy = 4AA415402DB4FF1100A43290 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		4A2BDD4C2DB3AEA4006C7516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		4A2BDD4D2DB3AEA4006C7516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		4A2BDD4F2DB3AEA4006C7516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Play_Wrist/Play_Wrist.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "이 앱은 로컬 네트워크 접근이 필요합니다.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		4A2BDD502DB3AEA4006C7516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Play_Wrist/Play_Wrist.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-Info.plist";
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "이 앱은 로컬 네트워크 접근이 필요합니다.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		4A2BDD522DB3AEA4006C7516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-WristTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play_Wrist.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Play_Wrist";
+			};
+			name = Debug;
+		};
+		4A2BDD532DB3AEA4006C7516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-WristTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play_Wrist.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Play_Wrist";
+			};
+			name = Release;
+		};
+		4A2BDD552DB3AEA4006C7516 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-WristUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Play_Wrist;
+			};
+			name = Debug;
+		};
+		4A2BDD562DB3AEA4006C7516 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-WristUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Play_Wrist;
+			};
+			name = Release;
+		};
+		4AA415432DB4FF1100A43290 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-W-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Play_Wrist_W;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "이 앱은 로컬 서버와 통신하기 위해 네트워크 접근 권한이 필요합니다\n로컬 네트워크 사용";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.hyeonsukim.Play-Wrist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10;
+			};
+			name = Debug;
+		};
+		4AA415442DB4FF1100A43290 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Play-Wrist-W-Watch-App-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = Play_Wrist_W;
+				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "이 앱은 로컬 서버와 통신하기 위해 네트워크 접근 권한이 필요합니다\n로컬 네트워크 사용";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = "com.hyeonsukim.Play-Wrist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist.watchkitapp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10;
+			};
+			name = Release;
+		};
+		4AA415452DB4FF1100A43290 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist-W-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play_Wrist_W Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Play_Wrist_W Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Debug;
+		};
+		4AA415462DB4FF1100A43290 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist-W-Watch-AppTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Play_Wrist_W Watch App.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Play_Wrist_W Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Release;
+		};
+		4AA415472DB4FF1100A43290 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist-W-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Play_Wrist_W Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Debug;
+		};
+		4AA415482DB4FF1100A43290 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 82UQ5L8MSR;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.hyeonsukim.Play-Wrist-W-Watch-AppUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				TEST_TARGET_NAME = "Play_Wrist_W Watch App";
+				WATCHOS_DEPLOYMENT_TARGET = 10.6;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4A2BDD282DB3AEA2006C7516 /* Build configuration list for PBXProject "Play_Wrist" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A2BDD4C2DB3AEA4006C7516 /* Debug */,
+				4A2BDD4D2DB3AEA4006C7516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4A2BDD4E2DB3AEA4006C7516 /* Build configuration list for PBXNativeTarget "Play_Wrist" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A2BDD4F2DB3AEA4006C7516 /* Debug */,
+				4A2BDD502DB3AEA4006C7516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4A2BDD512DB3AEA4006C7516 /* Build configuration list for PBXNativeTarget "Play_WristTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A2BDD522DB3AEA4006C7516 /* Debug */,
+				4A2BDD532DB3AEA4006C7516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4A2BDD542DB3AEA4006C7516 /* Build configuration list for PBXNativeTarget "Play_WristUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A2BDD552DB3AEA4006C7516 /* Debug */,
+				4A2BDD562DB3AEA4006C7516 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4AA415492DB4FF1100A43290 /* Build configuration list for PBXNativeTarget "Play_Wrist_W Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4AA415432DB4FF1100A43290 /* Debug */,
+				4AA415442DB4FF1100A43290 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4AA4154A2DB4FF1100A43290 /* Build configuration list for PBXNativeTarget "Play_Wrist_W Watch AppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4AA415452DB4FF1100A43290 /* Debug */,
+				4AA415462DB4FF1100A43290 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		4AA4154B2DB4FF1100A43290 /* Build configuration list for PBXNativeTarget "Play_Wrist_W Watch AppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4AA415472DB4FF1100A43290 /* Debug */,
+				4AA415482DB4FF1100A43290 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4A2BDD702DB3AFA0006C7516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.11.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4A2BDD712DB3AFA0006C7516 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A2BDD702DB3AFA0006C7516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		4A2BDD732DB3AFA0006C7516 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A2BDD702DB3AFA0006C7516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		4A2BDD752DB3AFA0006C7516 /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4A2BDD702DB3AFA0006C7516 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 4A2BDD252DB3AEA2006C7516 /* Project object */;
+}
